@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { usePlayerSession } from '../../../hooks/usePlayerSession';
 import { ControllerPad } from '../../../components/ControllerPad';
+import { GameConsoleFrame } from '../../../components/GameConsoleFrame';
 import { initialOf, playerColor } from '../../../lib/palette';
 
 export default function PlayPage() {
@@ -233,8 +234,16 @@ function PlayInner() {
         )}
 
         {s.phase === 'in' && s.status === 'playing' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%', maxWidth: 480, margin: '0 auto' }}>
-            {s.layout ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%', maxWidth: 480, margin: '0 auto', flex: 1 }}>
+            {s.currentGame?.controllerViewUrl && s.me ? (
+              // The game's own console UI — the platform just carries the wire.
+              <GameConsoleFrame
+                url={s.currentGame.controllerViewUrl}
+                layout={s.layout}
+                context={{ playerId: s.me.playerId, nickname: s.me.nickname, code, gameId: s.currentGame.gameId }}
+                onInput={s.sendInput}
+              />
+            ) : s.layout ? (
               <ControllerPad layout={s.layout} onInput={s.sendInput} />
             ) : (
               <div style={{ textAlign: 'center', color: 'var(--muted)', fontSize: 16 }}>

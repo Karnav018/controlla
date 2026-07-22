@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { io, type Socket } from 'socket.io-client';
-import { API_URL, ApiError } from '../lib/api';
+import { API_URL, ApiError, fetchGames } from '../lib/api';
 import {
   WIRE_EVENT,
   PROTOCOL_VERSION,
   type ControllerLayout,
   type Envelope,
+  type GameInfo,
   type PlayerPublic,
   type SessionStatePayload,
   type SessionStatus
@@ -23,6 +24,8 @@ export interface PlayerSession {
   players: PlayerPublic[];
   me: PlayerPublic | null;
   layout: ControllerLayout | null;
+  /** Catalogue entry for the game currently running (console URL etc.). */
+  currentGame: GameInfo | null;
   notice: string | null;
   join(nickname: string): void;
   setReady(ready: boolean): void;
@@ -50,7 +53,12 @@ export function usePlayerSession(code: string, joinToken: string | null): Player
   const [connected, setConnected] = useState(false);
   const [snapshot, setSnapshot] = useState<SessionStatePayload | null>(null);
   const [layout, setLayout] = useState<ControllerLayout | null>(null);
+  const [games, setGames] = useState<GameInfo[]>([]);
   const [notice, setNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    void fetchGames().then(setGames).catch(() => {});
+  }, []);
 
   const socketRef = useRef<Socket | null>(null);
   const seqRef = useRef(0);
@@ -278,6 +286,7 @@ export function usePlayerSession(code: string, joinToken: string | null): Player
 
   const players = snapshot?.players ?? [];
   const me = players.find((p) => p.playerId === (snapshot?.you?.playerId ?? storedRef.current?.playerId)) ?? null;
+  const currentGame = snapshot?.game ? (games.find((g) => g.gameId === snapshot.game?.gameId) ?? null) : null;
 
   return {
     phase,
@@ -287,6 +296,7 @@ export function usePlayerSession(code: string, joinToken: string | null): Player
     players,
     me,
     layout,
+    currentGame,
     notice,
     join,
     setReady,

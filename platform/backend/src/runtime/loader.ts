@@ -38,7 +38,9 @@ const MetadataSchema = z
     maxPlayers: z.number().int().min(1),
     tickRate: z.number().min(0).max(60),
     /** The game's own main-screen UI; the platform iframes it and relays state. */
-    hostViewUrl: z.string().url().optional()
+    hostViewUrl: z.string().url().optional(),
+    /** The game's own phone-console UI; the platform bridges identity + inputs. */
+    controllerViewUrl: z.string().url().optional()
   })
   .refine((m) => m.maxPlayers >= m.minPlayers, { message: 'maxPlayers < minPlayers' });
 

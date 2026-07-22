@@ -13,7 +13,7 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 
-**A host screen creates a session · players scan a QR · their phones become controllers · games run as provider plugins.**
+**A platform for consoles, not games.** A host screen creates a session · players scan a QR · phones become the game's consoles · every pixel of gameplay — big screen and phone — belongs to the game.
 
 [How it works](#-how-it-works) · [Architecture](#-architecture) · [Quick start](#-quick-start) · [Bring your game](#-bring-your-game) · [Docs](#-docs)
 

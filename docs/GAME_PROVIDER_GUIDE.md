@@ -118,36 +118,63 @@ export function createPlugin() {
 4. Operators can pull your game live via `installedPlugins.enabled = false` —
    no deploy.
 
-## 3½. Your main-screen UI (host view)
+## 3½. Your UI on both screens (host view + phone console)
 
-**The platform never draws your game.** Its host app is chrome + controllers
-only. Your game brings its own big-screen UI:
-
-1. Host and serve your UI anywhere (it's just a web page — your existing
-   game client works).
-2. Declare it in `metadata()`:
+**Controlla is a platform for consoles, not games — it never draws your
+game.** Both surfaces are yours; the platform carries the wire underneath.
+Serve each as a plain web page anywhere and declare them in `metadata()`:
 
 ```js
 metadata() {
-  return { id: 'scribble', /* … */, hostViewUrl: 'http://localhost:5173/host-view' };
+  return {
+    id: 'scribble', /* … */,
+    hostViewUrl: 'https://yourgame.example/tv',        // the big screen
+    controllerViewUrl: 'https://yourgame.example/pad'  // the phone console
+  };
 }
 ```
 
-3. While your game runs, the platform embeds that URL full-screen in an
-   iframe and relays every host-state update to it:
+### The big screen (`hostViewUrl`)
+
+While your game runs, the platform iframes this URL full-screen and relays
+every `ctx.setHostState(...)` to it — already reconnect-safe (a refreshed
+screen replays the latest state):
 
 ```js
-// In your UI — replaces your own socket server subscription:
 window.addEventListener('message', (e) => {
   if (e.data?.type !== 'controlla:state') return;
-  const { state, players } = e.data; // exactly what your plugin passed to ctx.setHostState
+  const { state, players } = e.data; // exactly what your plugin passed to setHostState
   render(state, players);
 });
 ```
 
-Everything you `ctx.setHostState(...)` arrives there, already reconnect-safe
-(the platform replays the latest state to a refreshed screen). No URL
-declared → the platform shows a neutral "game is live" stage.
+### The phone console (`controllerViewUrl`)
+
+Each phone embeds this URL while your game runs — your buttons, your canvas,
+your look. The platform keeps owning the socket, identity, grace window, and
+rate limits; your page just talks to the bridge:
+
+```js
+// 1. Announce you're listening; the platform replies with who this phone is
+//    and the per-player layout your plugin set (your role signal — e.g. a
+//    'canvas' component means this phone is the drawer).
+window.parent.postMessage({ type: 'controlla:ready' }, '*');
+window.addEventListener('message', (e) => {
+  const m = e.data;
+  if (m?.type === 'controlla:context') me = m;            // { playerId, nickname, code, gameId }
+  if (m?.type === 'controlla:layout') renderConsole(m.layout);
+});
+
+// 2. Send inputs — they arrive at your plugin's onInput(playerId, input):
+window.parent.postMessage(
+  { type: 'controlla:input', controlId: 'guess', action: 'submit', value: 'rocket' },
+  '*'
+);
+```
+
+No `controllerViewUrl` → the platform renders your layouts with its generic
+components (buttons, canvas, text-input, …) so every game is playable from
+day one. No `hostViewUrl` → a neutral "game is live" stage.
 
 ## 4. Testing your game
 
@@ -164,5 +191,5 @@ plays a full game (join → layouts → inputs → results) with no frontend.
 | Now | Drop-in directory, in-process execution (trusted providers) |
 | Marketplace | Submit as an npm package / upload; versioned installs, review flow |
 | Sandboxing | Same contract, executed in `worker_threads` — untrusted code welcome |
-| Host views | Ship a React component for the big screen alongside your logic (frontend contract, arrives with the web app) |
+| Host + console views | Shipped: declare `hostViewUrl` / `controllerViewUrl` and both screens are yours (§3½) |
 | Remote games | Optional out-of-process model: your servers implement the same port over the wire, any language |

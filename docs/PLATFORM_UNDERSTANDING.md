@@ -10,7 +10,11 @@
 
 ## 1. What Controlla is
 
-Controlla is **an operating system for party games**. It is not a game.
+Controlla is **a platform for consoles, not games**. It is not a game, and it
+does not draw games: phones become consoles, screens become stages, and every
+pixel of gameplay — the main screen AND the phone console — belongs to the
+game itself. The platform delivers the connectivity underneath: sessions,
+identity, reconnection, and the input wire.
 
 A host device (TV / laptop browser) creates a **Game Session**. Players scan a
 QR code with their phones, and each phone becomes a **controller**. Games are
@@ -211,8 +215,11 @@ a new index in the same PR. The full index table lives in
    identity loss on game switch is a regression.
 3. **Any client, at any moment, can be rebuilt from one snapshot.** Snapshot +
    deltas, everywhere, always.
-4. **The controller executes no game code.** It renders layouts and emits
-   input. This is what makes N games work with one join.
+4. **The platform owns the console connection; the game owns the console
+   pixels.** A game may bring its own phone UI (`controllerViewUrl`, embedded
+   and bridged) or lean on the platform's generic layout components — either
+   way the socket, identity, grace window, and input transport are always the
+   platform's, and joining once works for N games.
 5. **Only the server decides.** Host and controllers are I/O devices.
 6. **The Node server holds no state outside Redis.** Restartable, clusterable.
 7. **Gameplay hot path touches Redis only; every Mongo query is indexed.**

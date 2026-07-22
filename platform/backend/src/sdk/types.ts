@@ -23,6 +23,14 @@ export interface GameMetadata {
    * postMessage ({ type: 'controlla:state', gameId, state, players }).
    */
   hostViewUrl?: string;
+  /**
+   * URL of the game's own phone-console UI. While the game runs, the phone
+   * embeds this instead of platform-rendered layout components; the platform
+   * still owns the socket, identity, and input transport underneath.
+   * Bridge: platform → frame { type: 'controlla:context' | 'controlla:layout' },
+   * frame → platform { type: 'controlla:input', controlId, action, value }.
+   */
+  controllerViewUrl?: string;
 }
 
 export interface GamePlayer {

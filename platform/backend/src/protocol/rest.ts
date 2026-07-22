@@ -54,6 +54,12 @@ export interface GameInfo {
    * visuals itself — without a URL the host shows a neutral stage.
    */
   hostViewUrl?: string;
+  /**
+   * The game's own phone-console UI, embedded by /play while the game runs.
+   * The platform bridges identity, layout hints, and inputs underneath;
+   * without a URL the phone renders the platform's generic components.
+   */
+  controllerViewUrl?: string;
 }
 
 // ── admin (/admin — operator login, no in-app entry point) ──────────────

@@ -88,6 +88,8 @@ export interface GameInfo {
   featured?: boolean;
   /** The game's own main-screen UI — iframed by the host while running. */
   hostViewUrl?: string;
+  /** The game's own phone-console UI — iframed by /play while running. */
+  controllerViewUrl?: string;
 }
 
 export interface CreateSessionResponse {
