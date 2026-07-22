@@ -3,8 +3,8 @@
 Node.js (TypeScript) real-time server for the Controlla party-game platform:
 Express 5 REST API + Socket.IO gateway + server-side game runtime, backed by
 MongoDB (durable, indexed) and Redis (live state). See
-`../docs/PLATFORM_UNDERSTANDING.md` for the conceptual model and
-`../docs/IMPLEMENTATION_PLAN.md` for protocol/data-model decisions.
+`../../docs/PLATFORM_UNDERSTANDING.md` for the conceptual model and
+`../../docs/IMPLEMENTATION_PLAN.md` for protocol/data-model decisions.
 
 ## Run
 
@@ -47,7 +47,7 @@ persisted per-session seq.
 ## Games are provider packages — the platform ships none
 
 Game providers drop packages into `games/` (see `games/README.md` and
-`../docs/GAME_PROVIDER_GUIDE.md`). The loader discovers them at boot,
+`../../docs/GAME_PROVIDER_GUIDE.md`). The loader discovers them at boot,
 validates their metadata, and registers them in `installedPlugins`
 (enable/disable per game, no deploy). `GET /games` lists what hosts can start:
 

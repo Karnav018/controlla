@@ -33,7 +33,7 @@ YOUR GAME ──ctx.setHostState()────────▶ platform ───
 ## 2. The contract (structural — no dependency on us)
 
 Your package exports a factory. TypeScript types are available in
-`backend/src/sdk/types.ts` (npm package `@controlla/game-sdk` planned), but
+`platform/backend/src/sdk/types.ts` (npm package `@controlla/game-sdk` planned), but
 they're compile-time only — **plain JavaScript that matches the shape is a
 valid game**:
 
@@ -105,7 +105,7 @@ export function createPlugin() {
 
 ## 3. Shipping it
 
-1. Put your package in the platform's `backend/games/` directory:
+1. Put your package in the platform's `platform/backend/games/` directory:
    `games/<your-game>/index.js` (or `index.mjs` / `index.ts` /
    `package.json` `"main"`).
 2. Restart the backend. The loader validates your `metadata()` and hooks,
@@ -120,10 +120,10 @@ export function createPlugin() {
 
 ## 4. Testing your game
 
-The integration fixtures under `backend/test/fixtures/games/` are working
+The integration fixtures under `platform/backend/test/fixtures/games/` are working
 examples (echo, mini-race, crash-test). Boot the platform with
 `GAMES_DIR` pointed at your directory and drive it with any Socket.IO client —
-or copy the patterns in `backend/test/integration/06-runtime.spec.ts`, which
+or copy the patterns in `platform/backend/test/integration/06-runtime.spec.ts`, which
 plays a full game (join → layouts → inputs → results) with no frontend.
 
 ## 5. Roadmap for providers
