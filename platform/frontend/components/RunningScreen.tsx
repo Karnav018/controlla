@@ -61,7 +61,9 @@ export function RunningScreen({ game, players, gamestate, onEndGame, onEndSessio
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', background: '#000' }}
           allow="autoplay"
         />
-      ) : gamestate == null ? (
+      ) : (
+        // Neutral stage — the platform never draws game state, not even as a
+        // diagnostic. The pulse confirms the game's state is streaming.
         <div
           className="font-mono"
           style={{
@@ -80,28 +82,6 @@ export function RunningScreen({ game, players, gamestate, onEndGame, onEndSessio
         >
           GAME
         </div>
-      ) : (
-        <div
-          style={{
-            maxWidth: 640,
-            width: 'calc(100% - 80px)',
-            maxHeight: '38vh',
-            borderRadius: 24,
-            border: '1.5px dashed var(--line2)',
-            padding: '18px 22px',
-            overflow: 'auto'
-          }}
-        >
-          <div
-            className="font-mono"
-            style={{ fontSize: 11, color: 'var(--faint)', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: 10 }}
-          >
-            Live host state · drawn by the game
-          </div>
-          <pre className="font-mono" style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: 'var(--muted)', whiteSpace: 'pre-wrap' }}>
-            {JSON.stringify(gamestate, null, 2)}
-          </pre>
-        </div>
       )}
 
       {!game.hostViewUrl && (
@@ -111,8 +91,24 @@ export function RunningScreen({ game, players, gamestate, onEndGame, onEndSessio
           </div>
           <div style={{ fontSize: 15, color: 'var(--muted)', marginTop: 12, maxWidth: 560, textWrap: 'pretty' }}>
             This is the game&apos;s full-screen main view. Controlla hands the whole screen to the game — the game
-            visuals are drawn by the game itself. Phones are the controllers.
+            visuals are drawn by the game itself. Phones are the consoles.
           </div>
+          {gamestate != null && (
+            <div
+              className="font-mono"
+              style={{
+                marginTop: 14,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                fontSize: 12,
+                color: 'var(--faint)'
+              }}
+            >
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--ok)', animation: 'pulseDot 2s infinite' }} />
+              game state streaming — waiting for the game&apos;s screen (hostViewUrl)
+            </div>
+          )}
         </div>
       )}
 
