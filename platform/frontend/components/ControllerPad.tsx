@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { ControllerLayout, LayoutComponent } from '../lib/protocol';
+import { DrawCanvas } from './DrawCanvas';
 
 interface Props {
   layout: ControllerLayout;
@@ -139,6 +140,9 @@ function Component({ c, onInput }: { c: LayoutComponent; onInput: Props['onInput
 
     case 'text-input':
       return <TextInput c={c} onInput={onInput} />;
+
+    case 'canvas':
+      return <DrawCanvas controlId={c.id} onInput={onInput} />;
 
     case 'slider':
       return (

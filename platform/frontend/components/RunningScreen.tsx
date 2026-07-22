@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { GameInfo, PlayerPublic } from '../lib/protocol';
+import { HOST_VIEWS } from './hostviews';
 
 interface Props {
   game: GameInfo;
@@ -20,6 +21,7 @@ export function RunningScreen({ game, players, gamestate, onEndGame, onEndSessio
   const [menu, setMenu] = useState(false);
   const reconnecting = players.find((p) => p.presence === 'disconnected');
   const connectedCount = players.filter((p) => p.presence === 'connected').length;
+  const HostView = HOST_VIEWS[game.gameId];
 
   return (
     <div
@@ -36,7 +38,12 @@ export function RunningScreen({ game, players, gamestate, onEndGame, onEndSessio
         gap: 22
       }}
     >
-      {gamestate == null ? (
+      {HostView && gamestate != null ? (
+        // The game owns the screen: its registered host view renders the state.
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', padding: '76px 26px 26px' }}>
+          <HostView state={gamestate} />
+        </div>
+      ) : gamestate == null ? (
         <div
           className="font-mono"
           style={{
@@ -79,15 +86,17 @@ export function RunningScreen({ game, players, gamestate, onEndGame, onEndSessio
         </div>
       )}
 
-      <div style={{ textAlign: 'center' }}>
-        <div className="font-grotesk" style={{ fontWeight: 700, fontSize: 34, letterSpacing: '-.02em' }}>
-          {game.name} is live
+      {!HostView && (
+        <div style={{ textAlign: 'center' }}>
+          <div className="font-grotesk" style={{ fontWeight: 700, fontSize: 34, letterSpacing: '-.02em' }}>
+            {game.name} is live
+          </div>
+          <div style={{ fontSize: 15, color: 'var(--muted)', marginTop: 12, maxWidth: 560, textWrap: 'pretty' }}>
+            This is the game&apos;s full-screen main view. Controlla hands the whole screen to the game — the game
+            visuals and the phone consoles are drawn by the game itself.
+          </div>
         </div>
-        <div style={{ fontSize: 15, color: 'var(--muted)', marginTop: 12, maxWidth: 560, textWrap: 'pretty' }}>
-          This is the game&apos;s full-screen main view. Controlla hands the whole screen to the game — the game
-          visuals and the phone consoles are drawn by the game itself.
-        </div>
-      </div>
+      )}
 
       <div
         className="font-mono"

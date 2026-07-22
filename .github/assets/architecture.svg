@@ -1,0 +1,105 @@
+<svg width="960" height="500" viewBox="0 0 960 500" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="960" height="500" rx="16" fill="#0b0f1e"/>
+  <rect x="0.5" y="0.5" width="959" height="499" rx="15.5" fill="none" stroke="#2a3452"/>
+
+  <!-- layer captions -->
+  <g font-family="ui-monospace, monospace" font-size="11" letter-spacing="3" fill="#64748b">
+    <text x="32" y="30">CLIENTS · NEXT.JS 15 · REACT 19</text>
+    <text x="32" y="142">GATEWAY</text>
+    <text x="32" y="234">RUNTIME</text>
+    <text x="32" y="410">STATE</text>
+  </g>
+
+  <!-- connectors -->
+  <g stroke="#3d4c74" stroke-width="1.5">
+    <line x1="170" y1="98" x2="170" y2="150"/>
+    <line x1="480" y1="98" x2="480" y2="150"/>
+    <line x1="790" y1="98" x2="790" y2="150"/>
+    <line x1="480" y1="202" x2="480" y2="242"/>
+    <line x1="320" y1="382" x2="320" y2="418"/>
+    <line x1="640" y1="382" x2="640" y2="418"/>
+  </g>
+
+  <!-- packets on connectors -->
+  <g>
+    <circle r="3.5" fill="#22d3ee"><animateMotion path="M170 98V150" dur="1.3s" repeatCount="indefinite"/></circle>
+    <circle r="3.5" fill="#f472b6"><animateMotion path="M480 150V98" dur="1.3s" begin="0.4s" repeatCount="indefinite"/></circle>
+    <circle r="3.5" fill="#22d3ee"><animateMotion path="M790 98V150" dur="1.3s" begin="0.8s" repeatCount="indefinite"/></circle>
+    <circle r="3.5" fill="#a78bfa"><animateMotion path="M480 202V242" dur="1.1s" repeatCount="indefinite"/></circle>
+    <circle r="3.5" fill="#a78bfa"><animateMotion path="M480 242V202" dur="1.1s" begin="0.55s" repeatCount="indefinite"/></circle>
+    <circle r="3.5" fill="#fbbf24"><animateMotion path="M320 382V418" dur="1.5s" repeatCount="indefinite"/></circle>
+    <circle r="3.5" fill="#34d399"><animateMotion path="M640 418V382" dur="1.5s" begin="0.7s" repeatCount="indefinite"/></circle>
+  </g>
+
+  <!-- clients row -->
+  <g font-size="13" font-weight="700" text-anchor="middle">
+    <rect x="30" y="40" width="280" height="58" rx="12" fill="#131a30" stroke="#2f3b5e" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="1;0.4;1" dur="3s" repeatCount="indefinite"/>
+    </rect>
+    <text x="170" y="65" fill="#dbe4f3">HOST SCREEN</text>
+    <text x="170" y="84" font-family="ui-monospace, monospace" font-size="11" font-weight="400" fill="#64748b">/host — big screen + QR</text>
+
+    <rect x="340" y="40" width="280" height="58" rx="12" fill="#131a30" stroke="#2f3b5e" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="1;0.4;1" dur="3s" begin="1s" repeatCount="indefinite"/>
+    </rect>
+    <text x="480" y="65" fill="#dbe4f3">PHONE CONTROLLERS</text>
+    <text x="480" y="84" font-family="ui-monospace, monospace" font-size="11" font-weight="400" fill="#64748b">/play/[code] — declarative layouts</text>
+
+    <rect x="650" y="40" width="280" height="58" rx="12" fill="#131a30" stroke="#2f3b5e" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="1;0.4;1" dur="3s" begin="2s" repeatCount="indefinite"/>
+    </rect>
+    <text x="790" y="65" fill="#dbe4f3">OPERATOR PANEL</text>
+    <text x="790" y="84" font-family="ui-monospace, monospace" font-size="11" font-weight="400" fill="#64748b">/admin</text>
+  </g>
+
+  <!-- gateway bar -->
+  <rect x="30" y="150" width="900" height="52" rx="12" fill="#0e1b2e" stroke="#22d3ee" stroke-opacity="0.5" stroke-width="1.5">
+    <animate attributeName="stroke-opacity" values="0.5;0.15;0.5" dur="2.6s" repeatCount="indefinite"/>
+  </rect>
+  <text x="480" y="176" text-anchor="middle" font-size="13" font-weight="700" fill="#a5f3fc">SOCKET.IO GATEWAY · EXPRESS 5 REST</text>
+  <text x="480" y="193" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="#64748b">JWT session auth · Zod-validated protocol</text>
+
+  <!-- runtime -->
+  <rect x="30" y="242" width="900" height="140" rx="12" fill="#161230" stroke="#a78bfa" stroke-opacity="0.6" stroke-width="1.5">
+    <animate attributeName="stroke-opacity" values="0.6;0.25;0.6" dur="3s" repeatCount="indefinite"/>
+  </rect>
+  <text x="480" y="268" text-anchor="middle" font-size="13" font-weight="700" fill="#e9e4ff">SERVER-AUTHORITATIVE GAME RUNTIME</text>
+  <text x="480" y="286" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="#8b94ad">sessions · players · reconnect grace · event routing · timers · seeded RNG · plugin loader</text>
+
+  <!-- cartridge slots -->
+  <g text-anchor="middle" font-family="ui-monospace, monospace" font-size="11">
+    <rect x="70" y="302" width="250" height="56" rx="8" fill="#0b0f1e" stroke="#f472b6" stroke-dasharray="7 5" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="1;0.3;1" dur="1.8s" repeatCount="indefinite"/>
+    </rect>
+    <!-- cartridge dropping in -->
+    <g opacity="0">
+      <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.15;0.5;0.9;1" dur="5s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" type="translate" values="0 -26;0 0;0 0" keyTimes="0;0.3;1" dur="5s" repeatCount="indefinite"/>
+      <rect x="120" y="312" width="150" height="36" rx="5" fill="#1c2440" stroke="#f472b6" stroke-width="1.5"/>
+      <rect x="132" y="320" width="24" height="20" rx="3" fill="#f472b6" opacity="0.8"/>
+      <text x="212" y="335" fill="#f9a8d4">your-game@1.0.0</text>
+    </g>
+    <text x="195" y="374" fill="#8b94ad" font-size="10">← plugs in here · createPlugin()</text>
+
+    <rect x="355" y="302" width="250" height="56" rx="8" fill="#0b0f1e" stroke="#3d4c74" stroke-dasharray="7 5" stroke-width="1.5"/>
+    <text x="480" y="334" fill="#4a5878">empty slot</text>
+
+    <rect x="640" y="302" width="250" height="56" rx="8" fill="#0b0f1e" stroke="#3d4c74" stroke-dasharray="7 5" stroke-width="1.5"/>
+    <text x="765" y="334" fill="#4a5878">empty slot</text>
+  </g>
+
+  <!-- data row -->
+  <g text-anchor="middle">
+    <rect x="195" y="418" width="250" height="56" rx="12" fill="#1f1607" stroke="#fbbf24" stroke-opacity="0.5" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="0.5;0.15;0.5" dur="2.4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="320" y="443" font-size="13" font-weight="700" fill="#fde68a">REDIS</text>
+    <text x="320" y="461" font-family="ui-monospace, monospace" font-size="11" fill="#8b7a4a">live session state</text>
+
+    <rect x="515" y="418" width="250" height="56" rx="12" fill="#0c1f16" stroke="#34d399" stroke-opacity="0.5" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="0.5;0.15;0.5" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
+    </rect>
+    <text x="640" y="443" font-size="13" font-weight="700" fill="#a7f3d0">MONGODB</text>
+    <text x="640" y="461" font-family="ui-monospace, monospace" font-size="11" fill="#4a7a63">durable · every query indexed</text>
+  </g>
+</svg>

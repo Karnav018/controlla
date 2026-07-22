@@ -5,8 +5,9 @@ import { PROTOCOL_VERSION } from './envelope';
 
 export const ControllerInputSchema = z.object({
   controlId: z.string().min(1).max(64),
-  action: z.string().min(1).max(32), // e.g. 'press', 'release', 'submit', 'change'
-  value: z.union([z.string().max(500), z.number(), z.boolean()]).optional()
+  action: z.string().min(1).max(32), // e.g. 'press', 'release', 'submit', 'change', 'stroke'
+  // 2000 chars fits a full quantized stroke chunk from the canvas component.
+  value: z.union([z.string().max(2000), z.number(), z.boolean()]).optional()
 });
 export type ControllerInput = z.infer<typeof ControllerInputSchema>;
 
