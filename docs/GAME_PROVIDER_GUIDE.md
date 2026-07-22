@@ -118,6 +118,37 @@ export function createPlugin() {
 4. Operators can pull your game live via `installedPlugins.enabled = false` —
    no deploy.
 
+## 3½. Your main-screen UI (host view)
+
+**The platform never draws your game.** Its host app is chrome + controllers
+only. Your game brings its own big-screen UI:
+
+1. Host and serve your UI anywhere (it's just a web page — your existing
+   game client works).
+2. Declare it in `metadata()`:
+
+```js
+metadata() {
+  return { id: 'scribble', /* … */, hostViewUrl: 'http://localhost:5173/host-view' };
+}
+```
+
+3. While your game runs, the platform embeds that URL full-screen in an
+   iframe and relays every host-state update to it:
+
+```js
+// In your UI — replaces your own socket server subscription:
+window.addEventListener('message', (e) => {
+  if (e.data?.type !== 'controlla:state') return;
+  const { state, players } = e.data; // exactly what your plugin passed to ctx.setHostState
+  render(state, players);
+});
+```
+
+Everything you `ctx.setHostState(...)` arrives there, already reconnect-safe
+(the platform replays the latest state to a refreshed screen). No URL
+declared → the platform shows a neutral "game is live" stage.
+
 ## 4. Testing your game
 
 The integration fixtures under `platform/backend/test/fixtures/games/` are working

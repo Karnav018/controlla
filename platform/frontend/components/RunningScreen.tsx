@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { GameInfo, PlayerPublic } from '../lib/protocol';
-import { HOST_VIEWS } from './hostviews';
 
 interface Props {
   game: GameInfo;
@@ -17,11 +16,26 @@ interface Props {
  * to the game. Provider host-view bundles land in a later phase; until then
  * the game's live host state renders in the reserved surface.
  */
+/**
+ * The platform never draws game visuals — it only controls. While a game
+ * runs, this screen either embeds the game's OWN main-screen UI
+ * (metadata.hostViewUrl, state relayed via postMessage) or shows a neutral
+ * stage. Phones stay platform-rendered controllers either way.
+ */
 export function RunningScreen({ game, players, gamestate, onEndGame, onEndSession }: Props) {
   const [menu, setMenu] = useState(false);
+  const frameRef = useRef<HTMLIFrameElement>(null);
   const reconnecting = players.find((p) => p.presence === 'disconnected');
   const connectedCount = players.filter((p) => p.presence === 'connected').length;
-  const HostView = HOST_VIEWS[game.gameId];
+
+  // Relay live state into the game's UI: { type: 'controlla:state', ... }.
+  useEffect(() => {
+    if (!game.hostViewUrl || gamestate == null) return;
+    frameRef.current?.contentWindow?.postMessage(
+      { type: 'controlla:state', gameId: game.gameId, state: gamestate, players },
+      '*'
+    );
+  }, [game.hostViewUrl, game.gameId, gamestate, players]);
 
   return (
     <div
@@ -38,11 +52,15 @@ export function RunningScreen({ game, players, gamestate, onEndGame, onEndSessio
         gap: 22
       }}
     >
-      {HostView && gamestate != null ? (
-        // The game owns the screen: its registered host view renders the state.
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', padding: '76px 26px 26px' }}>
-          <HostView state={gamestate} />
-        </div>
+      {game.hostViewUrl ? (
+        // The game owns the whole screen with its own UI.
+        <iframe
+          ref={frameRef}
+          src={game.hostViewUrl}
+          title={game.name}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', background: '#000' }}
+          allow="autoplay"
+        />
       ) : gamestate == null ? (
         <div
           className="font-mono"
@@ -86,14 +104,14 @@ export function RunningScreen({ game, players, gamestate, onEndGame, onEndSessio
         </div>
       )}
 
-      {!HostView && (
+      {!game.hostViewUrl && (
         <div style={{ textAlign: 'center' }}>
           <div className="font-grotesk" style={{ fontWeight: 700, fontSize: 34, letterSpacing: '-.02em' }}>
             {game.name} is live
           </div>
           <div style={{ fontSize: 15, color: 'var(--muted)', marginTop: 12, maxWidth: 560, textWrap: 'pretty' }}>
             This is the game&apos;s full-screen main view. Controlla hands the whole screen to the game — the game
-            visuals and the phone consoles are drawn by the game itself.
+            visuals are drawn by the game itself. Phones are the controllers.
           </div>
         </div>
       )}

@@ -17,6 +17,12 @@ export interface GameMetadata {
   maxPlayers: number;
   /** Hz for update(); 0 = purely event-driven. */
   tickRate: number;
+  /**
+   * URL of the game's own main-screen UI. The platform never draws game
+   * visuals — the host app iframes this and relays host state to it via
+   * postMessage ({ type: 'controlla:state', gameId, state, players }).
+   */
+  hostViewUrl?: string;
 }
 
 export interface GamePlayer {

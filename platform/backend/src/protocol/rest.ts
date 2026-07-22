@@ -48,6 +48,12 @@ export interface GameInfo {
   minPlayers: number;
   maxPlayers: number;
   featured?: boolean;
+  /**
+   * The game's own main-screen UI, embedded by the host app while the game
+   * runs (state relayed via postMessage). The platform never draws game
+   * visuals itself — without a URL the host shows a neutral stage.
+   */
+  hostViewUrl?: string;
 }
 
 // ── admin (/admin — operator login, no in-app entry point) ──────────────

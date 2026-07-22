@@ -86,6 +86,8 @@ export interface GameInfo {
   minPlayers: number;
   maxPlayers: number;
   featured?: boolean;
+  /** The game's own main-screen UI — iframed by the host while running. */
+  hostViewUrl?: string;
 }
 
 export interface CreateSessionResponse {

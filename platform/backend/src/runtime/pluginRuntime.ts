@@ -71,7 +71,8 @@ export class PluginRuntime implements PluginRuntimePort {
         description: meta.description,
         minPlayers: meta.minPlayers,
         maxPlayers: meta.maxPlayers,
-        tickRate: meta.tickRate
+        tickRate: meta.tickRate,
+        hostViewUrl: meta.hostViewUrl
       }));
   }
 
