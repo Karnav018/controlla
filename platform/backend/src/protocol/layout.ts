@@ -26,6 +26,13 @@ export const LayoutComponentSchema = z.discriminatedUnion('kind', [
     choices: z.array(z.object({ id: z.string().min(1), label: z.string().min(1) })).min(1)
   }),
   z.object({ kind: z.literal('label'), id: z.string().min(1), text: z.string() }),
+  /**
+   * Freehand drawing surface (e.g. scribble games). The platform controller
+   * renders tools (colors, clear, undo) and streams quantized stroke chunks
+   * back as CONTROLLER_INPUT: action 'stroke' with value
+   * "colorIx|width|x,y;x,y;…" (coords 0..1000), plus 'clear' / 'undo'.
+   */
+  z.object({ kind: z.literal('canvas'), id: z.string().min(1) }),
   z.object({
     kind: z.literal('slider'),
     id: z.string().min(1),

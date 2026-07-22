@@ -67,7 +67,11 @@ export type LayoutComponent =
   | { kind: 'text-input'; id: string; placeholder?: string; maxLength?: number }
   | { kind: 'choice-list'; id: string; choices: Array<{ id: string; label: string }> }
   | { kind: 'label'; id: string; text: string }
-  | { kind: 'slider'; id: string; min: number; max: number; step?: number };
+  | { kind: 'slider'; id: string; min: number; max: number; step?: number }
+  | { kind: 'canvas'; id: string };
+
+/** Shared palette for the canvas component — index-addressed in stroke data. */
+export const CANVAS_COLORS = ['#111318', '#e11d48', '#f59e0b', '#16a34a', '#2563eb', '#9333ea', '#ffffff'];
 
 export interface ControllerLayout {
   layoutVersion: 1;

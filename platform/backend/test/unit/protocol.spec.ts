@@ -42,7 +42,7 @@ describe('ClientEnvelopeSchema', () => {
   });
 
   it('rejects oversized input values', () => {
-    const big = 'x'.repeat(501);
+    const big = 'x'.repeat(2001);
     expect(
       ClientEnvelopeSchema.safeParse({ ...validInput, payload: { controlId: 'a', action: 'submit', value: big } })
         .success
@@ -60,7 +60,8 @@ describe('ControllerLayoutSchema', () => {
         { kind: 'dpad', id: 'd' },
         { kind: 'text-input', id: 'ti', placeholder: 'name' },
         { kind: 'choice-list', id: 'c', choices: [{ id: 'x', label: 'X' }] },
-        { kind: 'slider', id: 's', min: 0, max: 10 }
+        { kind: 'slider', id: 's', min: 0, max: 10 },
+        { kind: 'canvas', id: 'draw' }
       ]
     };
     expect(ControllerLayoutSchema.safeParse(layout).success).toBe(true);
