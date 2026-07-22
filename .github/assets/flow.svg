@@ -1,0 +1,94 @@
+<svg width="960" height="350" viewBox="0 0 960 350" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#3d4c74"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="350" rx="16" fill="#0b0f1e"/>
+  <rect x="0.5" y="0.5" width="959" height="349" rx="15.5" fill="none" stroke="#2a3452"/>
+
+  <text x="480" y="38" text-anchor="middle" font-family="ui-monospace, monospace" font-size="14" letter-spacing="4" fill="#64748b">THE LOOP — ONE ROUND OF ANY GAME</text>
+
+  <!-- edges -->
+  <g stroke="#3d4c74" stroke-width="1.5" stroke-dasharray="5 6" marker-end="url(#arr)">
+    <path d="M212 122H326"><animate attributeName="stroke-dashoffset" values="22;0" dur="1.4s" repeatCount="indefinite"/></path>
+    <path d="M634 122H748"><animate attributeName="stroke-dashoffset" values="22;0" dur="1.4s" repeatCount="indefinite"/></path>
+    <path d="M748 208H634"><animate attributeName="stroke-dashoffset" values="22;0" dur="1.4s" repeatCount="indefinite"/></path>
+    <path d="M326 208H212"><animate attributeName="stroke-dashoffset" values="22;0" dur="1.4s" repeatCount="indefinite"/></path>
+    <path d="M480 250V284"><animate attributeName="stroke-dashoffset" values="22;0" dur="1.4s" repeatCount="indefinite"/></path>
+  </g>
+
+  <!-- edge labels -->
+  <g font-family="ui-monospace, monospace" font-size="12" text-anchor="middle">
+    <text x="269" y="110" fill="#7dd3fc">taps</text>
+    <text x="691" y="110" fill="#7dd3fc">onInput()</text>
+    <text x="691" y="230" fill="#f9a8d4">setHostState()</text>
+    <text x="269" y="230" fill="#f9a8d4">renders layout</text>
+    <text x="562" y="272" fill="#6ee7b7">host state</text>
+  </g>
+
+  <!-- packets -->
+  <g>
+    <circle r="4" fill="#22d3ee"><animateMotion path="M212 122H326" dur="1.6s" repeatCount="indefinite"/></circle>
+    <circle r="4" fill="#22d3ee"><animateMotion path="M634 122H748" dur="1.6s" begin="0.8s" repeatCount="indefinite"/></circle>
+    <circle r="4" fill="#f472b6"><animateMotion path="M748 208H634" dur="1.6s" begin="0.4s" repeatCount="indefinite"/></circle>
+    <circle r="4" fill="#f472b6"><animateMotion path="M326 208H212" dur="1.6s" begin="1.2s" repeatCount="indefinite"/></circle>
+    <circle r="4" fill="#34d399"><animateMotion path="M480 250V284" dur="1.2s" repeatCount="indefinite"/></circle>
+  </g>
+
+  <!-- player phones node -->
+  <g>
+    <rect x="42" y="80" width="170" height="170" rx="14" fill="#131a30" stroke="#2f3b5e" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="1;0.45;1" dur="3s" repeatCount="indefinite"/>
+    </rect>
+    <g transform="translate(127,145)">
+      <rect x="-20" y="-34" width="40" height="68" rx="8" fill="#1c2440" stroke="#384566" stroke-width="1.5"/>
+      <rect x="-15" y="-27" width="30" height="50" rx="3" fill="#0b0f1e"/>
+      <circle cx="-6" cy="6" r="5" fill="#f472b6"><animate attributeName="opacity" values="1;0.25;1" dur="1s" repeatCount="indefinite"/></circle>
+      <circle cx="7" cy="-6" r="5" fill="#22d3ee"><animate attributeName="opacity" values="1;0.25;1" dur="1s" begin="0.5s" repeatCount="indefinite"/></circle>
+    </g>
+    <text x="127" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#dbe4f3">PLAYER PHONES</text>
+    <text x="127" y="230" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="#64748b">/play/[code]</text>
+  </g>
+
+  <!-- platform node -->
+  <g>
+    <rect x="330" y="70" width="300" height="180" rx="14" fill="#161230" stroke="#a78bfa" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="1;0.4;1" dur="3s" begin="1s" repeatCount="indefinite"/>
+    </rect>
+    <g transform="translate(480,130)" stroke="#a78bfa" stroke-width="2" fill="#1c1745">
+      <path d="M0 -30L26 -15V15L0 30L-26 15V-15Z"/>
+      <circle r="9" fill="#a78bfa" stroke="none"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+    </g>
+    <text x="480" y="192" text-anchor="middle" font-size="14" font-weight="800" letter-spacing="2" fill="#e9e4ff">CONTROLLA PLATFORM</text>
+    <text x="480" y="214" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="#8b94ad">sessions · identity · routing</text>
+    <text x="480" y="232" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="#8b94ad">reconnect grace · timers · scores</text>
+  </g>
+
+  <!-- your game node -->
+  <g>
+    <rect x="748" y="80" width="170" height="170" rx="14" fill="#131a30" stroke="#2f3b5e" stroke-width="1.5" stroke-dasharray="7 5">
+      <animate attributeName="stroke" values="#2f3b5e;#f472b6;#2f3b5e" dur="3s" begin="2s" repeatCount="indefinite"/>
+    </rect>
+    <g transform="translate(833,140)">
+      <rect x="-16" y="2" width="32" height="14" rx="4" fill="#1c2440" stroke="#384566" stroke-width="1.5"/>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="-8 0 4;8 0 4;-8 0 4" dur="2.4s" repeatCount="indefinite"/>
+        <line x1="0" y1="4" x2="0" y2="-16" stroke="#8fa0bf" stroke-width="4" stroke-linecap="round"/>
+        <circle cy="-22" r="9" fill="#f472b6"/>
+      </g>
+    </g>
+    <text x="833" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#dbe4f3">YOUR GAME</text>
+    <text x="833" y="230" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="#64748b">server-side plugin</text>
+  </g>
+
+  <!-- host screen node -->
+  <g>
+    <rect x="352" y="286" width="256" height="44" rx="10" fill="#10201c" stroke="#34d399" stroke-opacity="0.5" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="0.5;0.15;0.5" dur="2.4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="480" y="309" text-anchor="middle" font-size="12" font-weight="700" fill="#a7f3d0">HOST / TV SCREEN</text>
+    <text x="480" y="323" text-anchor="middle" font-family="ui-monospace, monospace" font-size="10" fill="#5d7a70">/host</text>
+  </g>
+</svg>
