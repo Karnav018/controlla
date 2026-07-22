@@ -1,0 +1,290 @@
+@import "tailwindcss";
+
+/* ============================================================
+   SCRIBBLE PARTY — Design System
+   ============================================================ */
+
+/* ---------- CSS Custom Properties ---------- */
+:root {
+  --paper:      #FFFBF2;
+  --paper-dot:  #F1E9D8;
+  --ink:        #2E2A3D;
+  --panel:      #FFFFFF;
+  --coral:      #FF6B5B;
+  --sun:        #FFC93C;
+  --sky:        #3FC1C9;
+  --grape:      #9B72E8;
+  --leaf:       #4CAF7D;
+  --shadow:     rgba(46, 42, 61, 0.16);
+  --line:       #2E2A3D;
+
+  /* Player slot colors */
+  --player-1:   #FF6B5B;
+  --player-2:   #3FC1C9;
+  --player-3:   #FFC93C;
+  --player-4:   #9B72E8;
+
+  /* Typography */
+  --font-display: 'Baloo 2', 'Segoe UI', sans-serif;
+  --font-body:    'Nunito', 'Segoe UI', sans-serif;
+  --font-mono:    'Space Mono', 'Courier New', monospace;
+
+  /* Panel shape */
+  --radius-panel:  26px 12px 26px 12px;
+  --radius-pill:   999px;
+  --shadow-sticker: 5px 5px 0px var(--shadow);
+  --shadow-sticker-sm: 3px 3px 0px var(--shadow);
+  --border-ink:    3px solid var(--line);
+}
+
+/* ---------- Reset & Base ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--paper);
+  background-image: radial-gradient(circle, var(--paper-dot) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  user-select: none;
+}
+
+/* ---------- Typography helpers ---------- */
+.font-display { font-family: var(--font-display); }
+.font-body    { font-family: var(--font-body); }
+.font-mono    { font-family: var(--font-mono); }
+
+/* ---------- Panel / Card ---------- */
+.panel {
+  background: var(--panel);
+  border: var(--border-ink);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-sticker);
+}
+
+.panel-sm {
+  background: var(--panel);
+  border: var(--border-ink);
+  border-radius: 16px 8px 16px 8px;
+  box-shadow: var(--shadow-sticker-sm);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.95rem;
+  border-radius: var(--radius-pill);
+  border: var(--border-ink);
+  box-shadow: var(--shadow-sticker);
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px var(--shadow);
+}
+
+.btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--shadow);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-coral  { background: var(--coral);  color: #fff; }
+.btn-sun    { background: var(--sun);    color: var(--ink); }
+.btn-sky    { background: var(--sky);    color: #fff; }
+.btn-grape  { background: var(--grape);  color: #fff; }
+.btn-leaf   { background: var(--leaf);   color: #fff; }
+.btn-ghost  { background: var(--paper);  color: var(--ink); }
+.btn-ink    { background: var(--ink);    color: #fff; }
+
+.btn-lg { padding: 0.85rem 2.2rem; font-size: 1.05rem; }
+.btn-sm { padding: 0.35rem 1rem;   font-size: 0.8rem; }
+
+/* ---------- Chips ---------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  border: var(--border-ink);
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  box-shadow: var(--shadow-sticker-sm);
+}
+
+/* ---------- Inputs ---------- */
+.input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: var(--paper);
+  border: var(--border-ink);
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  color: var(--ink);
+  outline: none;
+  transition: box-shadow 0.15s ease;
+}
+
+.input::placeholder { color: rgba(46,42,61,0.35); }
+
+.input:focus {
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.input-mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.22em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ---------- Label ---------- */
+.label {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  margin-bottom: 0.35rem;
+  opacity: 0.7;
+}
+
+/* ---------- Scrollbar ---------- */
+.scrollable::-webkit-scrollbar       { width: 5px; }
+.scrollable::-webkit-scrollbar-track { background: transparent; }
+.scrollable::-webkit-scrollbar-thumb {
+  background: var(--paper-dot);
+  border-radius: 99px;
+  border: 1px solid var(--ink);
+}
+
+/* ---------- Squiggle underline (SVG logo decoration) ---------- */
+.logo-squiggle {
+  display: block;
+  width: 160px;
+  height: 12px;
+  margin: 2px auto 0;
+}
+
+/* ---------- Timer bar ---------- */
+.timer-bar-track {
+  width: 100%;
+  height: 12px;
+  background: var(--paper-dot);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.timer-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 1s linear, background-color 0.5s ease;
+}
+
+/* ---------- Keyframe Animations ---------- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounceIn {
+  0%   { transform: scale(0.7); opacity: 0; }
+  60%  { transform: scale(1.08); opacity: 1; }
+  80%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0.3; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-2deg); }
+  50%       { transform: rotate(2deg); }
+}
+
+@keyframes slideInDown {
+  from { transform: translateY(-30px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* ---------- Confetti pieces ---------- */
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+  pointer-events: none;
+}
+
+/* ---------- Word blanks ---------- */
+.word-display {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--ink);
+}
+
+/* ---------- Tooltip-like correct badge ---------- */
+.guess-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--leaf);
+  color: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+/* ---------- Sticker divider ---------- */
+.ink-divider {
+  border: none;
+  border-top: 2px dashed rgba(46,42,61,0.2);
+  margin: 0.75rem 0;
+}

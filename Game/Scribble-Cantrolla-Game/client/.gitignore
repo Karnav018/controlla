@@ -1,0 +1,176 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# pnpm specific
+.pnpm-debug.log
+pnpm-lock.yaml
+
+# TypeScript/JavaScript build caches
+.eslintcache
+.stylelintcache
+.tsbuildinfo
+
+# Vite production build output
+dist/
+dist-ssr/
+*.local
+
+# Vite local dev cache
+.vite/
+
+# Next.js (if using)
+.next/
+out/
+
+# Environment variables (Crucial for security!)
+.env
+.env.local
+.env.production
+.env.production.local
+.env.development
+.env.development.local
+.env.*.local
+
+# Optional: Un-ignore explicit environment examples if using them
+!.env.example
+!.env.local.example
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+.idea/
+.vscode-insiders/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# IDE
+.fleet/
+.vim/
+.emacs.d/
+
+# WebStorm/IntelliJ
+*.iml
+.idea_modules/
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# VS Code
+.vscode-test/
+.history/
+.vscodehistory
+
+# Build output
+build/
+out/
+bin/
+obj/
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+.coverage/
+htmlcov/
+
+# Dependencies lock files (optional - comment out if you want to commit)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.pid
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+desktop.ini
+Thumbs.db
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.cert
+
+# Node
+.node_modules.tgz
+.npm
+.eslintignore
+
+# Runtime
+pid/
+*.pid
+*.seed
+*.pid.lock
+
+# Compiled files
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+# Python (if using for build scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+ENV/
+
+# Node heap snapshots
+*.heapsnapshot
+
+# yarn/npm cache
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# React/Next.js specific
+.eslintcache
+.stylelintcache
+.next/
+out/
+Thumbs.db
