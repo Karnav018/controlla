@@ -1,0 +1,183 @@
+/* Controlla Host — design tokens + keyframes from Controlla Host.dc.html */
+
+:root {
+  --bg: #07080c;
+  --bg2: #0d0f16;
+  --panel: #12141d;
+  --panel2: #191c27;
+  --line: rgba(255, 255, 255, 0.09);
+  --line2: rgba(255, 255, 255, 0.16);
+  --text: #f2f3f8;
+  --muted: #a2a9bd;
+  --faint: #6a7185;
+  --accent: oklch(0.86 0.21 130);
+  --accent-ink: #07130a;
+  --ok: oklch(0.78 0.16 155);
+  --warn: oklch(0.82 0.16 72);
+  --gold: oklch(0.86 0.16 92);
+  --silver: #cbd5e1;
+  --bronze: #d9a066;
+  --danger: oklch(0.72 0.2 25);
+  --pad: 22px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #07080c;
+}
+
+body {
+  color: var(--text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+}
+a:hover {
+  color: var(--text);
+}
+
+.font-grotesk {
+  font-family: var(--font-grotesk), sans-serif;
+}
+.font-mono {
+  font-family: var(--font-mono), monospace;
+}
+
+/* hover states (the .dc.html style-hover attributes) */
+.game-card {
+  transition: transform 0.14s, border-color 0.14s;
+}
+.game-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--card-tint, var(--accent));
+}
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.btn-accent:hover {
+  filter: brightness(1.08);
+}
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.menu-item-danger:hover {
+  background: color-mix(in srgb, oklch(0.66 0.21 25) 14%, transparent);
+}
+.icon-btn:hover {
+  color: var(--text);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line2);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.85);
+  }
+  60% {
+    transform: translateY(-2px) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 44px 6px color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes popUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rise {
+  0% {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
