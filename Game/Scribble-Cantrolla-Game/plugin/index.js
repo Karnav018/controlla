@@ -234,7 +234,10 @@ export function createPlugin() {
         description: 'Draw on your phone, everyone guesses on theirs. Classic party scribbling.',
         minPlayers: 2,
         maxPlayers: 12,
-        tickRate: 4 // flushes batched strokes/hints to the host
+        tickRate: 4, // flushes batched strokes/hints to the host
+        // Scribble's OWN big-screen UI, shipped inside this package and
+        // served by the platform's game-asset route.
+        hostViewUrl: '/games/scribble/assets/host-view.html'
       };
     },
 

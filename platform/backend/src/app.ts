@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'node:path';
 import { createServer, type Server as HttpServer } from 'node:http';
+import { AppError } from './http/errors';
 import { Server as SocketIOServer } from 'socket.io';
 import { pinoHttp } from 'pino-http';
 import type { Deps } from './container';
@@ -42,6 +44,20 @@ export function buildServer(deps: Deps): BuiltServer {
 
   app.get('/healthz', (_req, res) => {
     res.json({ ok: true });
+  });
+
+  // Installed games can ship their own UI pages (host view / phone console)
+  // inside their package; the platform serves them here. The game's pixels
+  // stay the game's — the platform is just the CDN.
+  app.use('/games/:gameId/assets', (req, res, next) => {
+    const dir = deps.loader.dirOf(String(req.params.gameId ?? ''));
+    if (!dir) return next(new AppError(404, 'GAME_NOT_FOUND'));
+    const rel = decodeURIComponent(req.path).replace(/^\/+/, '');
+    const file = path.resolve(dir, rel || 'index.html');
+    if (!file.startsWith(dir + path.sep)) return next(new AppError(403, 'FORBIDDEN'));
+    res.sendFile(file, { dotfiles: 'deny' }, (err) => {
+      if (err && !res.headersSent) next(new AppError(404, 'ASSET_NOT_FOUND'));
+    });
   });
   app.use(
     sessionsRouter({

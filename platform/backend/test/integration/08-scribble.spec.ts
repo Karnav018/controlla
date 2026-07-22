@@ -40,7 +40,22 @@ describe('scribble plugin (Game/Scribble-Cantrolla-Game) on the platform', () =>
   it('loads from the game folder and appears in the catalogue', async () => {
     const games = (await restJson(server.baseUrl, 'GET', '/games')).json;
     const scribble = games.find((g: any) => g.gameId === 'scribble');
-    expect(scribble).toMatchObject({ name: 'Scribble', minPlayers: 2, maxPlayers: 12 });
+    expect(scribble).toMatchObject({
+      name: 'Scribble',
+      minPlayers: 2,
+      maxPlayers: 12,
+      hostViewUrl: '/games/scribble/assets/host-view.html'
+    });
+  });
+
+  it("serves the game's own UI pages from its package (the platform is just the CDN)", async () => {
+    const page = await fetch(`${server.baseUrl}/games/scribble/assets/host-view.html`);
+    expect(page.status).toBe(200);
+    const html = await page.text();
+    expect(html).toContain('controlla:state'); // the bridge listener, in the game's own page
+    // Traversal and unknown games are refused.
+    expect((await fetch(`${server.baseUrl}/games/scribble/assets/..%2F..%2Fetc`)).status).toBeGreaterThanOrEqual(400);
+    expect((await fetch(`${server.baseUrl}/games/nope/assets/host-view.html`)).status).toBe(404);
   });
 
   it('plays a full turn: draw on one phone, guess on the others, scores land', async () => {

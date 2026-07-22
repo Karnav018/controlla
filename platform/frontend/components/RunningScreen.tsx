@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { GameInfo, PlayerPublic } from '../lib/protocol';
+import { resolveGameUrl } from '../lib/api';
 
 interface Props {
   game: GameInfo;
@@ -29,13 +30,14 @@ export function RunningScreen({ game, players, gamestate, onEndGame, onEndSessio
   const connectedCount = players.filter((p) => p.presence === 'connected').length;
 
   // Relay live state into the game's UI: { type: 'controlla:state', ... }.
-  useEffect(() => {
+  const relay = () => {
     if (!game.hostViewUrl || gamestate == null) return;
     frameRef.current?.contentWindow?.postMessage(
       { type: 'controlla:state', gameId: game.gameId, state: gamestate, players },
       '*'
     );
-  }, [game.hostViewUrl, game.gameId, gamestate, players]);
+  };
+  useEffect(relay, [game.hostViewUrl, game.gameId, gamestate, players]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div
@@ -56,8 +58,9 @@ export function RunningScreen({ game, players, gamestate, onEndGame, onEndSessio
         // The game owns the whole screen with its own UI.
         <iframe
           ref={frameRef}
-          src={game.hostViewUrl}
+          src={resolveGameUrl(game.hostViewUrl)}
           title={game.name}
+          onLoad={relay} // a freshly loaded screen gets the current state immediately
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', background: '#000' }}
           allow="autoplay"
         />

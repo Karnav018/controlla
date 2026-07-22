@@ -28,6 +28,9 @@ async function api<T>(method: string, path: string, body?: unknown, token?: stri
 }
 
 export const fetchGames = () => api<GameInfo[]>('GET', '/games');
+
+/** Game view URLs may be platform-relative (served game assets) or absolute. */
+export const resolveGameUrl = (url: string) => (url.startsWith('/') ? `${API_URL}${url}` : url);
 export const createSession = () => api<CreateSessionResponse>('POST', '/sessions');
 export const fetchSession = (sessionId: string, hostToken: string) =>
   api<{ sessionId: string; status: string }>('GET', `/sessions/${sessionId}`, undefined, hostToken);

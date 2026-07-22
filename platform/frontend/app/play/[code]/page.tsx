@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
+import { resolveGameUrl } from '../../../lib/api';
 import { usePlayerSession } from '../../../hooks/usePlayerSession';
 import { ControllerPad } from '../../../components/ControllerPad';
 import { GameConsoleFrame } from '../../../components/GameConsoleFrame';
@@ -238,7 +239,7 @@ function PlayInner() {
             {s.currentGame?.controllerViewUrl && s.me ? (
               // The game's own console UI — the platform just carries the wire.
               <GameConsoleFrame
-                url={s.currentGame.controllerViewUrl}
+                url={resolveGameUrl(s.currentGame.controllerViewUrl)}
                 layout={s.layout}
                 context={{ playerId: s.me.playerId, nickname: s.me.nickname, code, gameId: s.currentGame.gameId }}
                 onInput={s.sendInput}

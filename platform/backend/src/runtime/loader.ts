@@ -37,10 +37,14 @@ const MetadataSchema = z
     minPlayers: z.number().int().min(1),
     maxPlayers: z.number().int().min(1),
     tickRate: z.number().min(0).max(60),
-    /** The game's own main-screen UI; the platform iframes it and relays state. */
-    hostViewUrl: z.string().url().optional(),
+    /**
+     * The game's own main-screen UI; the platform iframes it and relays
+     * state. Absolute URL, or a platform-relative path (e.g. the game's own
+     * served assets: /games/<id>/assets/host-view.html).
+     */
+    hostViewUrl: z.union([z.string().url(), z.string().regex(/^\//)]).optional(),
     /** The game's own phone-console UI; the platform bridges identity + inputs. */
-    controllerViewUrl: z.string().url().optional()
+    controllerViewUrl: z.union([z.string().url(), z.string().regex(/^\//)]).optional()
   })
   .refine((m) => m.maxPlayers >= m.minPlayers, { message: 'maxPlayers < minPlayers' });
 
@@ -114,6 +118,11 @@ export class PluginLoader {
       await rm(dir, { recursive: true, force: true }); // roll back the broken package
       throw err;
     }
+  }
+
+  /** Package directory for a loaded game — used to serve its static assets. */
+  dirOf(gameId: string): string | null {
+    return this.idToDir.get(gameId) ?? null;
   }
 
   /**
