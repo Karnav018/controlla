@@ -7,6 +7,7 @@ import { usePlayerSession } from '../../../hooks/usePlayerSession';
 import { ControllerPad } from '../../../components/ControllerPad';
 import { GameConsoleFrame } from '../../../components/GameConsoleFrame';
 import { initialOf, playerColor } from '../../../lib/palette';
+import { Logo } from '../../../components/Logo';
 
 export default function PlayPage() {
   return (
@@ -96,7 +97,7 @@ function PlayInner() {
       {/* top bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <img src="/logo.png" alt="Controlla Logo" style={{ width: 26, height: 26, borderRadius: 6, objectFit: 'contain' }} />
+          <Logo size={26} />
           <span className="font-grotesk" style={{ fontWeight: 700, fontSize: 17 }}>
             {s.currentGame?.name || 'Skribix'}
           </span>

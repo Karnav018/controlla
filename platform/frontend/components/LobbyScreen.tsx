@@ -166,7 +166,7 @@ export function LobbyScreen({ game, snapshot, players, busy, onBack, onStart }: 
               gap: 6
             }}
           >
-            🏠 Return Home
+            Return Home
           </div>
           <div
             className="font-grotesk"

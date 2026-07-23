@@ -54,11 +54,24 @@ a:hover {
 
 /* hover states (the .dc.html style-hover attributes) */
 .game-card {
-  transition: transform 0.14s, border-color 0.14s;
+  transition: none;
 }
 .game-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--card-tint, var(--accent));
+  transform: none;
+}
+.play-btn {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), filter 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+}
+.play-btn:hover {
+  transform: scale(1.04);
+  filter: brightness(1.12);
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.play-btn:active {
+  transform: scale(0.95);
+  filter: brightness(0.92);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 .btn-ghost:hover {
   background: rgba(255, 255, 255, 0.05);

@@ -23,6 +23,7 @@ import type {
   AdminSession,
   AdminStats
 } from '../../lib/protocol';
+import { Logo } from '../../components/Logo';
 
 const TOKEN_KEY = 'controlla.admin.token';
 const EMAIL_KEY = 'controlla.admin.email';
@@ -110,7 +111,7 @@ function Login({ onSignedIn }: { onSignedIn(token: string, email: string): void 
     >
       <div style={{ width: 380, display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 11, justifyContent: 'center', marginBottom: 8 }}>
-          <img src="/logo.png" alt="Controlla Logo" style={{ width: 30, height: 30, borderRadius: 8, objectFit: 'contain' }} />
+          <Logo size={30} />
           <div>
             <div className="font-grotesk" style={{ fontWeight: 700, fontSize: 18, lineHeight: 1 }}>
               Controlla
@@ -288,7 +289,7 @@ function Dashboard({ token, email, onAuthLost }: { token: string; email: string;
         }}
       >
         <div style={{ padding: '22px 20px 18px', display: 'flex', alignItems: 'center', gap: 11, borderBottom: '1px solid var(--line)' }}>
-          <img src="/logo.png" alt="Controlla Logo" style={{ width: 30, height: 30, borderRadius: 8, objectFit: 'contain', flex: 'none' }} />
+          <Logo size={30} />
           <div>
             <div className="font-grotesk" style={{ fontWeight: 700, fontSize: 16, letterSpacing: '-.02em', lineHeight: 1 }}>Controlla</div>
             <div className="font-mono" style={{ fontSize: 10, color: 'var(--faint)', letterSpacing: '.14em', marginTop: 3 }}>ADMIN</div>

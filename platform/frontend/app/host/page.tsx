@@ -6,6 +6,7 @@ import { LobbyScreen } from '../../components/LobbyScreen';
 import { RunningScreen } from '../../components/RunningScreen';
 import { ResultsScreen } from '../../components/ResultsScreen';
 import { SessionFinaleScreen } from '../../components/SessionFinaleScreen';
+import { Logo } from '../../components/Logo';
 
 const STEP_ORDER: Record<HostRoute, number> = { select: 0, lobby: 1, running: 2, results: 2, finale: 2 };
 const STEPS: Array<[string, number]> = [
@@ -45,42 +46,49 @@ export default function HostPage() {
             style={{ display: 'flex', alignItems: 'center', gap: 13, cursor: 'pointer' }}
             title="Return Home"
           >
-            <img
-              src="/logo.png"
-              alt="Controlla Logo"
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 8,
-                objectFit: 'contain',
-                boxShadow: '0 0 20px color-mix(in srgb, var(--accent) 30%, transparent)'
-              }}
-            />
+            <Logo size={34} />
             <div className="font-grotesk" style={{ fontWeight: 700, fontSize: 22, letterSpacing: '-.02em' }}>
               Controlla
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div className="font-mono" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: 'var(--faint)' }}>
-              {STEPS.map(([label, i]) => (
-                <span
-                  key={label}
-                  onClick={label === 'Pick game' ? s.backToSelect : undefined}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    cursor: label === 'Pick game' ? 'pointer' : 'default'
-                  }}
-                >
-                  <span style={{ color: order === i ? 'var(--accent)' : order > i ? 'var(--muted)' : 'var(--faint)' }}>
-                    {label}
-                  </span>
-                  {i < 2 && <span style={{ color: 'var(--line2)' }}>›</span>}
-                </span>
-              ))}
-            </div>
-          </div>
+          <nav style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
+            <span
+              onClick={s.backToSelect}
+              style={{
+                fontSize: 14.5,
+                fontWeight: 600,
+                color: s.route === 'select' ? 'var(--accent)' : 'rgba(255,255,255,0.7)',
+                cursor: 'pointer',
+                transition: 'color 0.2s ease'
+              }}
+            >
+              Games
+            </span>
+            <span
+              style={{
+                fontSize: 14.5,
+                fontWeight: 600,
+                color: 'rgba(255,255,255,0.7)',
+                cursor: 'pointer',
+                transition: 'color 0.2s ease'
+              }}
+              onClick={() => alert('Controlla Party Mode is 100% Free during Beta!')}
+            >
+              Pricing
+            </span>
+            <span
+              style={{
+                fontSize: 14.5,
+                fontWeight: 600,
+                color: 'rgba(255,255,255,0.7)',
+                cursor: 'pointer',
+                transition: 'color 0.2s ease'
+              }}
+              onClick={() => window.open('mailto:support@controlla.dev', '_blank')}
+            >
+              Contact Us
+            </span>
+          </nav>
         </header>
       )}
 
@@ -90,7 +98,7 @@ export default function HostPage() {
           minHeight: 0,
           display: 'flex',
           flexDirection: 'column',
-          padding: s.route === 'finale' ? '34px' : '0 34px 34px'
+          padding: s.route === 'select' ? '0' : s.route === 'finale' ? '34px' : '0 34px 34px'
         }}
       >
         {s.route === 'select' && <SelectScreen games={s.games} onPick={s.pickGame} />}
