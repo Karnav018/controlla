@@ -1,0 +1,3 @@
+@echo off
+echo Starting all Controlla services (Backend, Frontend/Admin, Scribble)...
+npm run dev

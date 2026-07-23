@@ -55,24 +55,20 @@ docs/                Platform understanding, implementation plan, game provider 
 
 ## 🚀 Quick start
 
-```bash
-# backend
-cd platform/backend
-docker compose up -d          # Redis (6381) + Mongo (27018)
-cp .env.example .env
-pnpm install && pnpm dev      # http://localhost:4000
+Run all services (Backend + MongoDB Atlas, Admin Panel / Host Frontend, Standalone Scribble Game) in **one single command**:
 
-# frontend
-cd ../frontend
-cp .env.local.example .env.local
-pnpm install && pnpm dev      # http://localhost:3000/host
+```bash
+npm run dev
+# or
+npm start
 ```
 
-Smoke test:
-
-```bash
-curl http://localhost:4000/healthz
-curl -X POST http://localhost:4000/sessions   # → { sessionId, code, joinUrl, hostToken }
+| Service | Local Address |
+|---|---|
+| 👑 **Admin Panel** | [http://localhost:3000/admin](http://localhost:3000/admin) |
+| 🎮 **Host Screen** | [http://localhost:3000/host](http://localhost:3000/host) |
+| ⚡ **Backend API** | [http://localhost:4000](http://localhost:4000) |
+| ✏️ **Scribble Game** | [http://localhost:5173](http://localhost:5173) |
 ```
 
 See [`platform/backend/README.md`](platform/backend/README.md) for tests, invariants, and LAN/phone setup.
