@@ -116,49 +116,32 @@ export function RunningScreen({ game, players, gamestate, onEndGame, onEndSessio
       )}
 
       <div
-        className="font-mono"
-        style={{
-          position: 'absolute',
-          top: 22,
-          left: 26,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          padding: '7px 13px',
-          borderRadius: 999,
-          background: 'rgba(0,0,0,.35)',
-          border: '1px solid var(--line)',
-          fontSize: 12,
-          color: 'var(--muted)',
-          opacity: 0.6
-        }}
-      >
-        <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--ok)', animation: 'pulseDot 2s infinite' }} />
-        {connectedCount} connected
-      </div>
-
-      <div
-        className="icon-btn"
+        className="play-btn"
         onClick={() => setMenu((m) => !m)}
         style={{
           position: 'absolute',
-          top: 22,
-          right: 26,
-          width: 40,
-          height: 40,
-          borderRadius: '50%',
-          border: '1px solid var(--line2)',
-          background: 'rgba(0,0,0,.35)',
+          top: 20,
+          right: 24,
+          height: 42,
+          padding: '0 18px',
+          borderRadius: 999,
+          border: '1px solid rgba(255,255,255,0.15)',
+          background: 'rgba(10, 12, 16, 0.75)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 22,
-          color: 'var(--muted)',
+          gap: 8,
+          fontSize: 14,
+          fontWeight: 700,
+          color: '#ffffff',
           cursor: 'pointer',
-          backdropFilter: 'blur(6px)'
+          boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+          zIndex: 60
         }}
       >
-        ⋯
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Menu
       </div>
 
       {menu && (

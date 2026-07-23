@@ -83,25 +83,66 @@ function PlayInner() {
     };
   }, []);
 
+  const [isFullscreen, setIsFullscreen] = useState(true);
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    handleFsChange();
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
+
+  const requestFs = () => {
+    if (typeof window === 'undefined') return;
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    }
+  };
+
   return (
     <div
       style={{
-        minHeight: '100dvh',
+        height: '100dvh',
+        maxHeight: '100dvh',
+        overflow: 'hidden',
         background: 'radial-gradient(120% 90% at 50% -10%, var(--bg2), var(--bg))',
         color: 'var(--text)',
         display: 'flex',
         flexDirection: 'column',
-        padding: '18px 20px calc(20px + env(safe-area-inset-bottom))'
+        padding: '10px 14px calc(10px + env(safe-area-inset-bottom))'
       }}
     >
       {/* top bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Logo size={26} />
-          <span className="font-grotesk" style={{ fontWeight: 700, fontSize: 17 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6, flex: 'none' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Logo size={20} />
+          <span className="font-grotesk" style={{ fontWeight: 700, fontSize: 14.5 }}>
             {s.currentGame?.name || 'Skribix'}
           </span>
         </div>
+        {!isFullscreen && (
+          <button
+            onClick={requestFs}
+            className="play-btn"
+            style={{
+              padding: '4px 12px',
+              borderRadius: 999,
+              border: 'none',
+              background: 'var(--accent)',
+              color: '#0a0b10',
+              fontWeight: 800,
+              fontSize: 12,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4
+            }}
+          >
+            ⛶ Fullscreen
+          </button>
+        )}
       </div>
 
       {/* reconnecting banner */}
@@ -111,20 +152,20 @@ function PlayInner() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 10,
-            padding: '10px 14px',
-            borderRadius: 12,
+            gap: 8,
+            padding: '8px 12px',
+            borderRadius: 10,
             background: 'var(--panel)',
             border: '1px solid var(--line2)',
-            fontSize: 12.5,
+            fontSize: 11.5,
             color: 'var(--warn)',
-            marginBottom: 10
+            marginBottom: 8
           }}
         >
           <span
             style={{
-              width: 12,
-              height: 12,
+              width: 10,
+              height: 10,
               border: '2px solid var(--warn)',
               borderTopColor: 'transparent',
               borderRadius: '50%',
@@ -135,31 +176,31 @@ function PlayInner() {
         </div>
       )}
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 20 }}>
+      <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 12 }}>
         {(s.phase === 'boot' || s.phase === 'joining') && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
             <div
               style={{
-                width: 22,
-                height: 22,
+                width: 20,
+                height: 20,
                 border: '3px solid var(--accent)',
                 borderTopColor: 'transparent',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite'
               }}
             />
-            <div style={{ color: 'var(--muted)', fontSize: 15 }}>
+            <div style={{ color: 'var(--muted)', fontSize: 14 }}>
               {s.phase === 'joining' ? 'Grabbing your seat…' : 'Waking up…'}
             </div>
           </div>
         )}
 
         {s.phase === 'join' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 360, width: '100%', margin: '0 auto' }}>
             <div style={{ textAlign: 'center' }}>
               <div
                 className="font-mono"
-                style={{ fontSize: 12, color: 'var(--accent)', letterSpacing: '.24em', textTransform: 'uppercase' }}
+                style={{ fontSize: 11, color: 'var(--accent)', letterSpacing: '.2em', textTransform: 'uppercase' }}
               >
                 Joining party
               </div>
@@ -174,23 +215,23 @@ function PlayInner() {
               style={{
                 background: 'var(--panel)',
                 border: '1px solid var(--line2)',
-                borderRadius: 16,
-                padding: '18px 18px',
-                fontSize: 18,
+                borderRadius: 12,
+                padding: '12px 14px',
+                fontSize: 16,
                 textAlign: 'center',
                 color: 'var(--text)',
                 outline: 'none'
               }}
             />
             <button
-              className="font-grotesk"
+              className="font-grotesk play-btn"
               onClick={() => nickname.trim() && handleJoin(nickname.trim())}
               disabled={!nickname.trim()}
               style={{
                 border: 'none',
-                borderRadius: 16,
-                padding: '18px',
-                fontSize: 19,
+                borderRadius: 12,
+                padding: '13px',
+                fontSize: 16,
                 fontWeight: 700,
                 background: nickname.trim() ? 'var(--accent)' : 'rgba(255,255,255,0.06)',
                 color: nickname.trim() ? 'var(--accent-ink)' : 'var(--faint)',
@@ -201,114 +242,100 @@ function PlayInner() {
               I&apos;m in →
             </button>
             {s.error && (
-              <div style={{ textAlign: 'center', color: 'var(--warn)', fontSize: 13.5 }}>{s.error}</div>
+              <div style={{ textAlign: 'center', color: 'var(--warn)', fontSize: 12.5 }}>{s.error}</div>
             )}
           </div>
         )}
 
         {s.phase === 'in' && s.status === 'lobby' && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18, width: '100%', maxWidth: 440, margin: '0 auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, width: '100%', maxWidth: 380, margin: '0 auto', flex: 1, minHeight: 0, justifyContent: 'center' }}>
             {s.me && (
               <div style={{ position: 'relative' }}>
                 <div
                   className="font-grotesk"
                   style={{
-                    width: 84,
-                    height: 84,
+                    width: 64,
+                    height: 64,
                     borderRadius: '50%',
                     background: playerColor(s.me.playerId),
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontWeight: 700,
-                    fontSize: 36,
+                    fontSize: 26,
                     color: '#fff',
-                    boxShadow: '0 0 0 3px color-mix(in srgb, var(--accent) 60%, transparent)',
+                    boxShadow: s.isMaster ? '0 0 0 4px #f59e0b' : '0 0 0 4px #22c55e',
                     animation: 'popIn .4s ease'
                   }}
                 >
                   {initialOf(s.me.nickname)}
                 </div>
-                {s.isMaster && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      bottom: -4,
-                      right: -8,
-                      background: '#f59e0b',
-                      color: '#000',
-                      fontSize: 10,
-                      fontWeight: 800,
-                      letterSpacing: '.06em',
-                      padding: '3px 9px',
-                      borderRadius: 999,
-                      boxShadow: '0 4px 10px rgba(0,0,0,.4)'
-                    }}
-                  >
-                    MASTER HOST
-                  </div>
-                )}
               </div>
             )}
             <div style={{ textAlign: 'center' }}>
-              <div className="font-grotesk" style={{ fontWeight: 700, fontSize: 26 }}>
+              <div className="font-grotesk" style={{ fontWeight: 700, fontSize: 19 }}>
                 {s.isMaster ? `Room Master, ${s.me?.nickname}` : `You're in, ${s.me?.nickname}`}
               </div>
-              <div style={{ color: 'var(--muted)', fontSize: 14.5, marginTop: 6 }}>
+              <div style={{ color: 'var(--muted)', fontSize: 12.5, marginTop: 4 }}>
                 {s.isMaster ? 'You control the game start from your phone!' : 'Waiting for Room Master to start the game.'}
               </div>
-              <div className="font-mono" style={{ color: 'var(--faint)', fontSize: 12.5, marginTop: 6 }}>
+              <div className="font-mono" style={{ color: 'var(--faint)', fontSize: 11, marginTop: 4 }}>
                 {s.players.length} in the room
               </div>
             </div>
 
             {s.isMaster ? (
-              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, flex: 1, minHeight: 0 }}>
                 <button
                   onClick={copyLink}
                   style={{
                     border: '1px solid var(--line2)',
-                    borderRadius: 14,
-                    padding: '12px 18px',
+                    borderRadius: 12,
+                    padding: '9px 14px',
                     background: 'rgba(255,255,255,0.06)',
                     color: 'var(--text)',
-                    fontSize: 14,
+                    fontSize: 12.5,
                     fontWeight: 600,
                     cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                  {copied ? 'Link Copied!' : 'Share Room Link to Friends'}
+                </button>
+
+                <button
+                  className="font-grotesk play-btn"
+                  onClick={() => {
+                    if (s.players.length >= 2) {
+                      triggerFullscreenAndLandscape();
+                      s.startGame('scribble');
+                    }
+                  }}
+                  disabled={s.players.length < 2}
+                  style={{
+                    border: 'none',
+                    borderRadius: 12,
+                    padding: '13px',
+                    fontSize: 16,
+                    fontWeight: 800,
+                    background: s.players.length >= 2 ? 'var(--accent)' : 'rgba(255,255,255,0.08)',
+                    color: s.players.length >= 2 ? 'var(--accent-ink)' : 'var(--faint)',
+                    cursor: s.players.length >= 2 ? 'pointer' : 'not-allowed',
+                    boxShadow: s.players.length >= 2 ? '0 6px 20px color-mix(in srgb, var(--accent) 40%, transparent)' : 'none',
+                    WebkitTapHighlightColor: 'transparent',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: 8
                   }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-                  {copied ? 'Link Copied to Clipboard!' : 'Share Room Link to Friends'}
-                </button>
-
-                <button
-                  className="font-grotesk"
-                  onClick={() => s.players.length >= 2 && s.startGame('scribble')}
-                  disabled={s.players.length < 2}
-                  style={{
-                    border: 'none',
-                    borderRadius: 16,
-                    padding: '18px',
-                    fontSize: 20,
-                    fontWeight: 800,
-                    background: s.players.length >= 2 ? 'var(--accent)' : 'rgba(255,255,255,0.08)',
-                    color: s.players.length >= 2 ? 'var(--accent-ink)' : 'var(--faint)',
-                    cursor: s.players.length >= 2 ? 'pointer' : 'not-allowed',
-                    boxShadow: s.players.length >= 2 ? '0 8px 24px color-mix(in srgb, var(--accent) 40%, transparent)' : 'none',
-                    WebkitTapHighlightColor: 'transparent',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 10
-                  }}
-                >
                   {s.players.length >= 2 ? (
                     <>
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                       START GAME
                     </>
                   ) : (
@@ -321,14 +348,16 @@ function PlayInner() {
                   style={{
                     background: 'var(--panel)',
                     border: '1px solid var(--line2)',
-                    borderRadius: 16,
-                    padding: 14,
+                    borderRadius: 12,
+                    padding: 8,
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: 10
+                    gap: 6,
+                    maxHeight: 120,
+                    overflowY: 'auto'
                   }}
                 >
-                  <div className="font-mono" style={{ fontSize: 11, color: 'var(--faint)', textTransform: 'uppercase', letterSpacing: '.1em' }}>
+                  <div className="font-mono" style={{ fontSize: 10, color: 'var(--faint)', textTransform: 'uppercase', letterSpacing: '.1em' }}>
                     Party Players ({s.players.length})
                   </div>
                   {s.players.map((p) => (
@@ -338,16 +367,16 @@ function PlayInner() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        padding: '8px 12px',
+                        padding: '5px 8px',
                         background: 'rgba(255,255,255,0.03)',
-                        borderRadius: 10
+                        borderRadius: 8
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span
                           style={{
-                            width: 28,
-                            height: 28,
+                            width: 20,
+                            height: 20,
                             borderRadius: '50%',
                             background: playerColor(p.playerId),
                             display: 'inline-flex',
@@ -355,12 +384,12 @@ function PlayInner() {
                             justifyContent: 'center',
                             color: '#fff',
                             fontWeight: 700,
-                            fontSize: 13
+                            fontSize: 10
                           }}
                         >
                           {initialOf(p.nickname)}
                         </span>
-                        <span style={{ fontSize: 14.5, fontWeight: 600 }}>
+                        <span style={{ fontSize: 12.5, fontWeight: 600 }}>
                           {p.nickname} {p.playerId === s.me?.playerId ? '(You)' : ''}
                         </span>
                       </div>
@@ -371,9 +400,9 @@ function PlayInner() {
                             border: '1px solid color-mix(in srgb, var(--warn) 40%, transparent)',
                             background: 'transparent',
                             color: 'var(--warn)',
-                            borderRadius: 8,
-                            padding: '4px 10px',
-                            fontSize: 12,
+                            borderRadius: 6,
+                            padding: '2px 7px',
+                            fontSize: 10.5,
                             fontWeight: 600,
                             cursor: 'pointer'
                           }}
@@ -387,13 +416,13 @@ function PlayInner() {
               </div>
             ) : (
               <button
-                className="font-grotesk"
+                className="font-grotesk play-btn"
                 onClick={() => s.setReady(!s.me?.ready)}
                 style={{
                   border: s.me?.ready ? '1px solid var(--line2)' : 'none',
-                  borderRadius: 16,
-                  padding: '18px 44px',
-                  fontSize: 19,
+                  borderRadius: 12,
+                  padding: '13px 28px',
+                  fontSize: 15,
                   fontWeight: 700,
                   background: s.me?.ready ? 'transparent' : 'var(--accent)',
                   color: s.me?.ready ? 'var(--muted)' : 'var(--accent-ink)',
@@ -411,7 +440,7 @@ function PlayInner() {
                 border: 'none',
                 background: 'none',
                 color: 'var(--faint)',
-                fontSize: 13,
+                fontSize: 11.5,
                 cursor: 'pointer',
                 textDecoration: 'underline'
               }}
@@ -422,9 +451,8 @@ function PlayInner() {
         )}
 
         {s.phase === 'in' && s.status === 'playing' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%', maxWidth: 480, margin: '0 auto', flex: 1 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%', maxWidth: 480, margin: '0 auto', flex: 1, minHeight: 0, overflow: 'hidden' }}>
             {s.currentGame?.controllerViewUrl && s.me ? (
-              // The game's own console UI — the platform just carries the wire.
               <GameConsoleFrame
                 url={resolveGameUrl(s.currentGame.controllerViewUrl)}
                 layout={s.layout}
@@ -434,8 +462,8 @@ function PlayInner() {
             ) : s.layout ? (
               <ControllerPad layout={s.layout} onInput={s.sendInput} />
             ) : (
-              <div style={{ textAlign: 'center', color: 'var(--muted)', fontSize: 16 }}>
-                <div className="font-grotesk" style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>
+              <div style={{ textAlign: 'center', color: 'var(--muted)', fontSize: 14, margin: 'auto' }}>
+                <div className="font-grotesk" style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>
                   Game on
                 </div>
                 Watch the TV — no controls needed right now.

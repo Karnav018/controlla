@@ -17,7 +17,7 @@ interface Props {
  */
 export function ControllerPad({ layout, onInput }: Props) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', flex: 1, minHeight: 0, justifyContent: 'center' }}>
       {layout.components.map((c) => (
         <Component key={c.id} c={c} onInput={onInput} />
       ))}
@@ -31,7 +31,7 @@ function Component({ c, onInput }: { c: LayoutComponent; onInput: Props['onInput
       return (
         <div
           className="font-grotesk"
-          style={{ textAlign: 'center', fontSize: 19, fontWeight: 600, color: 'var(--muted)', textWrap: 'pretty' }}
+          style={{ textAlign: 'center', fontSize: 16, fontWeight: 600, color: 'var(--muted)', textWrap: 'pretty' }}
         >
           {c.text}
         </div>
@@ -40,17 +40,17 @@ function Component({ c, onInput }: { c: LayoutComponent; onInput: Props['onInput
     case 'buttons': {
       const big = c.buttons.length === 1;
       return (
-        <div style={{ display: 'grid', gridTemplateColumns: big ? '1fr' : 'repeat(2, 1fr)', gap: 14 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: big ? '1fr' : 'repeat(2, 1fr)', gap: 10 }}>
           {c.buttons.map((b) => (
             <button
               key={b.id}
               onPointerDown={() => onInput(b.id, 'press')}
-              className="font-grotesk"
+              className="font-grotesk play-btn"
               style={{
                 border: 'none',
-                borderRadius: 22,
-                padding: big ? '54px 20px' : '34px 16px',
-                fontSize: big ? 34 : 26,
+                borderRadius: 16,
+                padding: big ? '28px 16px' : '20px 14px',
+                fontSize: big ? 26 : 20,
                 fontWeight: 700,
                 background: 'var(--accent)',
                 color: 'var(--accent-ink)',

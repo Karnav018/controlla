@@ -154,6 +154,9 @@ export function SelectScreen({ games, onPick }: Props) {
                       className="play-btn"
                       onClick={(e) => {
                         e.stopPropagation();
+                        if (typeof window !== 'undefined' && !document.fullscreenElement && document.documentElement.requestFullscreen) {
+                          document.documentElement.requestFullscreen().catch(() => {});
+                        }
                         onPick(g.gameId);
                       }}
                       style={{

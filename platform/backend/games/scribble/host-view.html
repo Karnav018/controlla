@@ -94,22 +94,32 @@
 
   /* Modal Overlay (Choose Word / State Display) */
   #overlay {
-    position: absolute; inset: 0; display: none; flex-direction: column;
-    align-items: center; justify-content: center; background: rgba(43, 40, 54, 0.45);
-    backdrop-filter: blur(4px); z-index: 10; padding: 20px;
+    position: fixed; inset: 0; display: none; flex-direction: column;
+    align-items: center; justify-content: center; background: rgba(10, 12, 18, 0.75);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); z-index: 999; padding: 20px;
   }
   #overlay.show { display: flex; }
   .modalCard {
-    background: #fffdf8; border: 3px solid #2b2836; border-radius: 24px;
-    padding: 28px 36px; display: flex; flex-direction: column; align-items: center; gap: 16px;
-    box-shadow: 0 8px 0 #2b2836; max-width: 480px; width: 100%; text-align: center;
-    animation: popIn 0.3s ease;
+    background: #ffffff; border: 3px solid #2b2836; border-radius: 28px;
+    padding: 36px 44px; display: flex; flex-direction: column; align-items: center; gap: 14px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5); max-width: 500px; width: 100%; text-align: center;
+    animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ovAvatar {
+    width: 96px; height: 96px; border-radius: 50%; border: 4px solid #2b2836;
+    display: flex; align-items: center; justify-content: center; color: #ffffff;
+    font-size: 42px; font-weight: 900; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .ovBadge {
+    background: #f59e0b; border: 2px solid #2b2836; color: #000000;
+    font-size: 11px; font-weight: 900; letter-spacing: 0.1em; padding: 3px 14px;
+    border-radius: 999px; text-transform: uppercase;
   }
   @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-  .modalTitle { font-size: 28px; font-weight: 800; color: #2b2836; }
+  .modalTitle { font-size: 26px; font-weight: 800; color: #2b2836; line-height: 1.25; }
   .modalTime {
     background: #fef08a; border: 2px solid #2b2836; border-radius: 999px;
-    padding: 4px 16px; font-size: 13px; font-weight: 800; color: #2b2836;
+    padding: 6px 20px; font-size: 14px; font-weight: 800; color: #2b2836;
   }
   .wordChoices { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; width: 100%; margin-top: 6px; }
   .wordBtn {
@@ -135,6 +145,17 @@
 </style>
 </head>
 <body>
+  <!-- Fullscreen Blur Overlay -->
+  <div id="overlay">
+    <div class="modalCard">
+      <div id="ovAv" class="ovAvatar">P</div>
+      <div id="ovBadge" class="ovBadge">PICASSO</div>
+      <div id="ovTitle" class="modalTitle">Picasso is choosing a word...</div>
+      <div id="ovTime" class="modalTime">Please wait!</div>
+      <div id="ovChoices" class="wordChoices"></div>
+    </div>
+  </div>
+
   <!-- Top Bar -->
   <div class="topBar">
     <div class="topGroup">
@@ -166,13 +187,6 @@
     <div class="centerWrap">
       <div class="canvasBox">
         <canvas id="board"></canvas>
-        <div id="overlay">
-          <div class="modalCard">
-            <div class="modalTitle" id="ovTitle">Choose a Word!</div>
-            <div class="modalTime" id="ovTime">Time left: 80s</div>
-            <div class="wordChoices" id="ovChoices"></div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -229,11 +243,21 @@
     const overlay = document.getElementById('overlay');
     if (state.phase === 'choosing' && state.drawer) {
       overlay.className = 'show';
-      document.getElementById('ovTitle').textContent = 'Picasso is Picking a Word…';
-      document.getElementById('ovTime').textContent = 'Waiting for ' + state.drawer.name + ' to pick on their phone';
+      const drawerName = state.drawer.name || 'Picasso';
+      const drawerInitial = (drawerName[0] || 'P').toUpperCase();
+      const drawerColor = colorFor(state.drawer.id || 'drawer');
+
+      document.getElementById('ovAv').textContent = drawerInitial;
+      document.getElementById('ovAv').style.background = drawerColor;
+      document.getElementById('ovBadge').textContent = drawerName + ' • PICASSO';
+      document.getElementById('ovTitle').textContent = drawerName + ' is choosing the word...';
+      document.getElementById('ovTime').textContent = 'Please wait!';
       document.getElementById('ovChoices').innerHTML = '';
     } else if (state.phase === 'reveal') {
       overlay.className = 'show';
+      document.getElementById('ovAv').textContent = '💡';
+      document.getElementById('ovAv').style.background = '#f59e0b';
+      document.getElementById('ovBadge').textContent = 'REVEAL';
       document.getElementById('ovTitle').textContent = 'THE WORD WAS!';
       document.getElementById('ovTime').textContent = (state.hint || '').toUpperCase();
       document.getElementById('ovChoices').innerHTML = '';

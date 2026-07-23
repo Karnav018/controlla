@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useHostSession, type HostRoute } from '../../hooks/useHostSession';
 import { SelectScreen } from '../../components/SelectScreen';
 import { LobbyScreen } from '../../components/LobbyScreen';
@@ -18,6 +19,23 @@ const STEPS: Array<[string, number]> = [
 export default function HostPage() {
   const s = useHostSession();
   const order = STEP_ORDER[s.route];
+
+  useEffect(() => {
+    const enterFullscreen = () => {
+      if (typeof window === 'undefined') return;
+      if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    };
+
+    window.addEventListener('click', enterFullscreen, { once: true });
+    window.addEventListener('touchstart', enterFullscreen, { once: true });
+
+    return () => {
+      window.removeEventListener('click', enterFullscreen);
+      window.removeEventListener('touchstart', enterFullscreen);
+    };
+  }, []);
 
   return (
     <div
@@ -75,6 +93,18 @@ export default function HostPage() {
               onClick={() => alert('Controlla Party Mode is 100% Free during Beta!')}
             >
               Pricing
+            </span>
+            <span
+              style={{
+                fontSize: 14.5,
+                fontWeight: 600,
+                color: 'rgba(255,255,255,0.7)',
+                cursor: 'pointer',
+                transition: 'color 0.2s ease'
+              }}
+              onClick={() => window.location.href = '/developer'}
+            >
+              Developer
             </span>
             <span
               style={{

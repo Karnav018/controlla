@@ -82,7 +82,7 @@ export function LobbyScreen({ game, snapshot, players, busy, onBack, onStart }: 
               {players.length} in the room · {readyLine}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 660 }}>
-              {players.map((p) => (
+              {players.map((p, idx) => (
                 <div
                   key={p.playerId}
                   style={{
@@ -109,7 +109,7 @@ export function LobbyScreen({ game, snapshot, players, busy, onBack, onStart }: 
                       fontWeight: 700,
                       fontSize: 21,
                       color: '#fff',
-                      boxShadow: p.ready ? '0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent)' : 'none'
+                      boxShadow: idx === 0 ? '0 0 0 3.5px #f59e0b' : '0 0 0 3.5px #22c55e'
                     }}
                   >
                     {initialOf(p.nickname)}
@@ -170,7 +170,14 @@ export function LobbyScreen({ game, snapshot, players, busy, onBack, onStart }: 
           </div>
           <div
             className="font-grotesk"
-            onClick={canStart ? onStart : undefined}
+            onClick={() => {
+              if (canStart) {
+                if (typeof window !== 'undefined' && !document.fullscreenElement && document.documentElement.requestFullscreen) {
+                  document.documentElement.requestFullscreen().catch(() => {});
+                }
+                onStart();
+              }
+            }}
             style={{
               padding: '14px 34px',
               borderRadius: 13,
