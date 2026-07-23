@@ -104,7 +104,7 @@ export function createPlugin() {
     if (phase === 'reveal') {
       return { layoutVersion: 1, components: [label('t', `The word was “${word.toUpperCase()}”`)] };
     }
-    return { layoutVersion: 1, components: [label('t', 'Scribble')] };
+    return { layoutVersion: 1, components: [label('t', 'Skribix')] };
   };
 
   const pushLayouts = async () => {
@@ -229,7 +229,7 @@ export function createPlugin() {
     metadata() {
       return {
         id: 'scribble',
-        name: 'Scribble',
+        name: 'Skribix',
         version: '1.0.0',
         description: 'Draw on your phone, everyone guesses on theirs. Classic party scribbling.',
         minPlayers: 2,

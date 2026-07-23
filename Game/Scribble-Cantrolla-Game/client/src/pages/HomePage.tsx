@@ -85,7 +85,7 @@ export default function HomePage() {
         {/* Title Header */}
         <div className="text-center mb-2.5">
           <h1 className="text-2xl sm:text-3xl font-extrabold font-display text-[var(--ink)] tracking-wide relative inline-block">
-            Scribble Party
+            Skribix Party
           </h1>
           <svg className="logo-squiggle w-28 h-2 mx-auto" viewBox="0 0 160 12" fill="none">
             <path d="M3 9C25 3 45 10 65 5C85 1 105 10 125 4C145 -2 155 8 157 7" stroke="var(--coral)" strokeWidth="4" strokeLinecap="round"/>

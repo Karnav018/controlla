@@ -45,20 +45,17 @@ export default function HostPage() {
             style={{ display: 'flex', alignItems: 'center', gap: 13, cursor: 'pointer' }}
             title="Return Home"
           >
-            <div
+            <img
+              src="/logo.png"
+              alt="Controlla Logo"
               style={{
                 width: 34,
                 height: 34,
-                borderRadius: 10,
-                background: 'var(--accent)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 0 26px color-mix(in srgb, var(--accent) 45%, transparent)'
+                borderRadius: 8,
+                objectFit: 'contain',
+                boxShadow: '0 0 20px color-mix(in srgb, var(--accent) 30%, transparent)'
               }}
-            >
-              <div style={{ width: 13, height: 13, borderRadius: 4, background: 'var(--accent-ink)' }} />
-            </div>
+            />
             <div className="font-grotesk" style={{ fontWeight: 700, fontSize: 22, letterSpacing: '-.02em' }}>
               Controlla
             </div>

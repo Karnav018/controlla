@@ -96,21 +96,9 @@ function PlayInner() {
       {/* top bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div
-            style={{
-              width: 26,
-              height: 26,
-              borderRadius: 8,
-              background: 'var(--accent)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div style={{ width: 10, height: 10, borderRadius: 3, background: 'var(--accent-ink)' }} />
-          </div>
+          <img src="/logo.png" alt="Controlla Logo" style={{ width: 26, height: 26, borderRadius: 6, objectFit: 'contain' }} />
           <span className="font-grotesk" style={{ fontWeight: 700, fontSize: 17 }}>
-            {s.currentGame?.name || 'Scribble'}
+            {s.currentGame?.name || 'Skribix'}
           </span>
         </div>
       </div>

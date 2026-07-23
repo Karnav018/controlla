@@ -41,7 +41,7 @@ describe('scribble plugin (Game/Scribble-Cantrolla-Game) on the platform', () =>
     const games = (await restJson(server.baseUrl, 'GET', '/games')).json;
     const scribble = games.find((g: any) => g.gameId === 'scribble');
     expect(scribble).toMatchObject({
-      name: 'Scribble',
+      name: 'Skribix',
       minPlayers: 2,
       maxPlayers: 12,
       hostViewUrl: '/games/scribble/assets/host-view.html'

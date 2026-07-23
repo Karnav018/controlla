@@ -20,7 +20,12 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: 'Controlla',
-  description: 'Phones become controllers. The platform for party games.'
+  description: 'Phones become controllers. The platform for party games.',
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png'
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
