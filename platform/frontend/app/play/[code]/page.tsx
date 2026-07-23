@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { resolveGameUrl } from '../../../lib/api';
 import { usePlayerSession } from '../../../hooks/usePlayerSession';
@@ -23,6 +23,8 @@ function PlayInner() {
   const s = usePlayerSession(code, search.get('t'));
   const [nickname, setNickname] = useState('');
   const [copied, setCopied] = useState(false);
+
+  const [isPortrait, setIsPortrait] = useState(false);
 
   const copyLink = async () => {
     if (typeof window === 'undefined') return;
@@ -49,6 +51,36 @@ function PlayInner() {
       setTimeout(() => setCopied(false), 2000);
     }
   };
+
+  const triggerFullscreenAndLandscape = () => {
+    if (typeof window === 'undefined') return;
+    try {
+      if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+      if (window.screen?.orientation && 'lock' in window.screen.orientation) {
+        (window.screen.orientation as any).lock('landscape').catch(() => {});
+      }
+    } catch {}
+  };
+
+  const handleJoin = (name: string) => {
+    triggerFullscreenAndLandscape();
+    s.join(name);
+  };
+
+  useEffect(() => {
+    const checkOrientation = () => {
+      setIsPortrait(window.innerWidth < window.innerHeight && window.innerWidth < 850);
+    };
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      window.removeEventListener('orientationchange', checkOrientation);
+    };
+  }, []);
 
   return (
     <div
@@ -81,9 +113,6 @@ function PlayInner() {
             {s.currentGame?.name || 'Scribble'}
           </span>
         </div>
-        <span className="font-mono" style={{ fontSize: 12.5, color: 'var(--faint)', letterSpacing: '.14em' }}>
-          {code}
-        </span>
       </div>
 
       {/* reconnecting banner */}
@@ -145,12 +174,6 @@ function PlayInner() {
               >
                 Joining party
               </div>
-              <div
-                className="font-mono"
-                style={{ fontWeight: 600, fontSize: 40, letterSpacing: '.18em', marginTop: 10, color: 'var(--text)' }}
-              >
-                {code}
-              </div>
             </div>
             <input
               value={nickname}
@@ -158,7 +181,7 @@ function PlayInner() {
               placeholder="Your name"
               autoFocus
               onChange={(e) => setNickname(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && nickname.trim() && s.join(nickname.trim())}
+              onKeyDown={(e) => e.key === 'Enter' && nickname.trim() && handleJoin(nickname.trim())}
               style={{
                 background: 'var(--panel)',
                 border: '1px solid var(--line2)',
@@ -172,7 +195,7 @@ function PlayInner() {
             />
             <button
               className="font-grotesk"
-              onClick={() => nickname.trim() && s.join(nickname.trim())}
+              onClick={() => nickname.trim() && handleJoin(nickname.trim())}
               disabled={!nickname.trim()}
               style={{
                 border: 'none',
@@ -223,16 +246,17 @@ function PlayInner() {
                       position: 'absolute',
                       bottom: -4,
                       right: -8,
-                      background: 'var(--accent)',
-                      color: 'var(--accent-ink)',
-                      fontSize: 11,
+                      background: '#f59e0b',
+                      color: '#000',
+                      fontSize: 10,
                       fontWeight: 800,
-                      padding: '3px 8px',
+                      letterSpacing: '.06em',
+                      padding: '3px 9px',
                       borderRadius: 999,
                       boxShadow: '0 4px 10px rgba(0,0,0,.4)'
                     }}
                   >
-                    👑 MASTER
+                    MASTER HOST
                   </div>
                 )}
               </div>
@@ -268,7 +292,8 @@ function PlayInner() {
                     gap: 8
                   }}
                 >
-                  🔗 {copied ? 'Link Copied to Clipboard!' : 'Share Room Link to Friends'}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                  {copied ? 'Link Copied to Clipboard!' : 'Share Room Link to Friends'}
                 </button>
 
                 <button
@@ -285,10 +310,21 @@ function PlayInner() {
                     color: s.players.length >= 2 ? 'var(--accent-ink)' : 'var(--faint)',
                     cursor: s.players.length >= 2 ? 'pointer' : 'not-allowed',
                     boxShadow: s.players.length >= 2 ? '0 8px 24px color-mix(in srgb, var(--accent) 40%, transparent)' : 'none',
-                    WebkitTapHighlightColor: 'transparent'
+                    WebkitTapHighlightColor: 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 10
                   }}
                 >
-                  {s.players.length >= 2 ? '🚀 START GAME' : 'Waiting for 2+ Players to Join...'}
+                  {s.players.length >= 2 ? (
+                    <>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                      START GAME
+                    </>
+                  ) : (
+                    'Waiting for 2+ Players to Join...'
+                  )}
                 </button>
 
                 {/* Player List for Master with Kick / Remove buttons */}
@@ -428,6 +464,35 @@ function PlayInner() {
           </div>
         )}
       </div>
+
+      {s.status === 'playing' && isPortrait && (
+        <div
+          onClick={triggerFullscreenAndLandscape}
+          style={{
+            position: 'fixed',
+            top: 14,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            padding: '8px 16px',
+            borderRadius: 999,
+            background: '#fcd34d',
+            border: '2px solid #2b2836',
+            fontSize: 12.5,
+            fontWeight: 800,
+            color: '#2b2836',
+            boxShadow: '0 4px 12px rgba(0,0,0,.3)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            cursor: 'pointer',
+            animation: 'popIn .3s ease'
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 2.1l4 4-4 4"/><path d="M3 12a9 9 0 0115-6.7L21 6"/><path d="M7 21.9l-4-4 4-4"/><path d="M21 12a9 9 0 01-15 6.7L3 18"/></svg>
+          Rotate phone sideways for Full Screen
+        </div>
+      )}
 
       {s.notice && (
         <div

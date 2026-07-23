@@ -11,6 +11,7 @@ export interface PlayerPublic {
   presence: PresenceState;
   ready: boolean;
   score: number;
+  joinedAt?: number;
 }
 
 /**

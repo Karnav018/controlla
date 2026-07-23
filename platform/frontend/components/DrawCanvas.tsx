@@ -46,21 +46,28 @@ export function DrawCanvas({ controlId, onInput }: Props) {
 
     const fit = () => {
       const parent = canvas.parentElement;
-      const landscape = window.innerWidth > window.innerHeight && window.innerWidth < 1100;
+      const landscape = window.innerWidth > window.innerHeight;
       setIsLandscape(landscape);
 
-      let size = 320;
+      let pxW = 320;
+      let pxH = 320;
+
       if (parent) {
         if (landscape) {
-          size = Math.min(parent.clientWidth * 0.6, window.innerHeight - 100);
+          // Maximize height and fill available width minus slim 90px right panel
+          pxH = Math.max(200, window.innerHeight - 80);
+          pxW = Math.max(200, parent.clientWidth - 110);
         } else {
-          size = Math.min(parent.clientWidth, window.innerHeight - 200);
+          pxW = parent.clientWidth;
+          pxH = Math.min(parent.clientWidth, window.innerHeight - 220);
         }
       }
-      canvas.width = size * (window.devicePixelRatio || 1);
-      canvas.height = size * (window.devicePixelRatio || 1);
-      canvas.style.width = `${size}px`;
-      canvas.style.height = `${size}px`;
+
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = pxW * ratio;
+      canvas.height = pxH * ratio;
+      canvas.style.width = `${pxW}px`;
+      canvas.style.height = `${pxH}px`;
       redraw();
     };
 
@@ -123,13 +130,14 @@ export function DrawCanvas({ controlId, onInput }: Props) {
       style={{
         display: 'flex',
         flexDirection: isLandscape ? 'row' : 'column',
-        alignItems: 'center',
+        alignItems: 'stretch',
         justifyContent: 'center',
-        gap: 14,
-        width: '100%'
+        gap: 12,
+        width: '100%',
+        height: isLandscape ? 'calc(100dvh - 65px)' : 'auto'
       }}
     >
-      {/* Canvas Box */}
+      {/* WHITE SPACE (Large Canvas Box) */}
       <div
         style={{
           background: '#ffffff',
@@ -137,7 +145,10 @@ export function DrawCanvas({ controlId, onInput }: Props) {
           border: '2.5px solid #2b2836',
           boxShadow: '0 6px 0 #2b2836',
           overflow: 'hidden',
-          flex: 'none'
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
       >
         <canvas
@@ -150,59 +161,80 @@ export function DrawCanvas({ controlId, onInput }: Props) {
         />
       </div>
 
-      {/* 3D Party Control Toolbar */}
+      {/* EDITOR TOOLBAR (Slim Right Panel in Landscape, Strip in Portrait) */}
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column',
-          gap: 10,
+          flexDirection: isLandscape ? 'column' : 'column',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 8,
           background: '#ffffff',
           border: '2.5px solid #2b2836',
           borderRadius: 18,
-          padding: '12px 14px',
+          padding: isLandscape ? '10px 8px' : '12px 14px',
           boxShadow: '0 5px 0 #2b2836',
-          flex: 1,
-          width: isLandscape ? 'auto' : '100%'
+          width: isLandscape ? '94px' : '100%',
+          flex: 'none'
         }}
       >
-        {/* Tool Mode Buttons */}
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 2 }}>
+        {/* Mode Toggles */}
+        <div style={{ display: 'flex', flexDirection: isLandscape ? 'column' : 'row', gap: 6, width: '100%' }}>
           <button
             onClick={() => setToolMode('brush')}
+            title="Brush"
             style={{
+              flex: 1,
               border: '2px solid #2b2836',
-              borderRadius: 12,
-              padding: '6px 14px',
-              fontSize: 13,
+              borderRadius: 10,
+              padding: '6px 4px',
+              fontSize: 12,
               fontWeight: 800,
               background: toolMode === 'brush' ? '#fcd34d' : '#fff',
               color: '#2b2836',
               cursor: 'pointer',
-              boxShadow: toolMode === 'brush' ? '0 2.5px 0 #2b2836' : 'none'
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 4
             }}
           >
-            ✏️ Brush
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+            {!isLandscape && 'Brush'}
           </button>
           <button
             onClick={() => setToolMode('eraser')}
+            title="Eraser"
             style={{
+              flex: 1,
               border: '2px solid #2b2836',
-              borderRadius: 12,
-              padding: '6px 14px',
-              fontSize: 13,
+              borderRadius: 10,
+              padding: '6px 4px',
+              fontSize: 12,
               fontWeight: 800,
               background: toolMode === 'eraser' ? '#fcd34d' : '#fff',
               color: '#2b2836',
               cursor: 'pointer',
-              boxShadow: toolMode === 'eraser' ? '0 2.5px 0 #2b2836' : 'none'
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 4
             }}
           >
-            🧹 Eraser
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 20H7L3 16C2 15 2 13 3 12L13 2C14 1 16 1 17 2L21 6C22 7 22 9 21 10L11 20"/><path d="M17 6L7 16"/></svg>
+            {!isLandscape && 'Eraser'}
           </button>
         </div>
 
-        {/* Color Palette & Brush Sizes & Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+        {/* Color Palette Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: isLandscape ? 'repeat(2, 1fr)' : 'repeat(8, 1fr)',
+            gap: 6,
+            justifyItems: 'center'
+          }}
+        >
           {CANVAS_COLORS.map((c, i) => (
             <div
               key={c}
@@ -211,31 +243,29 @@ export function DrawCanvas({ controlId, onInput }: Props) {
                 setToolMode('brush');
               }}
               style={{
-                width: 28,
-                height: 28,
+                width: 24,
+                height: 24,
                 borderRadius: '50%',
                 background: c,
-                border: colorIx === i && toolMode === 'brush' ? '3px solid #2b2836' : '2px solid #2b2836',
+                border: colorIx === i && toolMode === 'brush' ? '3px solid #2b2836' : '1.5px solid #2b2836',
                 transform: colorIx === i && toolMode === 'brush' ? 'scale(1.15)' : 'scale(1)',
-                cursor: 'pointer',
-                boxShadow: '0 2px 0 #2b2836',
-                transition: 'transform 0.1s ease'
+                cursor: 'pointer'
               }}
             />
           ))}
+        </div>
 
-          <div style={{ flex: 1 }} />
-
-          {/* Stroke Widths */}
+        {/* Stroke Sizes */}
+        <div style={{ display: 'flex', flexDirection: isLandscape ? 'row' : 'row', gap: 4 }}>
           {WIDTHS.map((w) => (
             <div
               key={w}
               onClick={() => setWidth(w)}
               style={{
-                width: 30,
-                height: 30,
-                borderRadius: 10,
-                border: width === w ? '2.5px solid #2b2836' : '1.5px solid #d1d5db',
+                width: 24,
+                height: 24,
+                borderRadius: 8,
+                border: width === w ? '2px solid #2b2836' : '1px solid #d1d5db',
                 background: width === w ? '#fef08a' : '#fff',
                 display: 'flex',
                 alignItems: 'center',
@@ -245,57 +275,66 @@ export function DrawCanvas({ controlId, onInput }: Props) {
             >
               <span
                 style={{
-                  width: Math.max(4, w * 0.6),
-                  height: Math.max(4, w * 0.6),
+                  width: Math.max(3, w * 0.5),
+                  height: Math.max(3, w * 0.5),
                   borderRadius: '50%',
                   background: '#2b2836'
                 }}
               />
             </div>
           ))}
+        </div>
 
-          {/* Undo */}
+        {/* Action Buttons: Undo & Clear */}
+        <div style={{ display: 'flex', gap: 6, width: '100%' }}>
           <button
             onClick={() => {
               strokesRef.current.pop();
               redraw();
               onInput(controlId, 'undo');
             }}
+            title="Undo"
             style={{
+              flex: 1,
               border: '2px solid #2b2836',
-              borderRadius: 10,
-              padding: '5px 10px',
-              fontSize: 13,
+              borderRadius: 8,
+              padding: '6px 0',
+              fontSize: 12,
               fontWeight: 800,
               background: '#fff',
               color: '#2b2836',
               cursor: 'pointer',
-              boxShadow: '0 2px 0 #2b2836'
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
-            ↩
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
           </button>
 
-          {/* Clear */}
           <button
             onClick={() => {
               strokesRef.current = [];
               redraw();
               onInput(controlId, 'clear');
             }}
+            title="Clear"
             style={{
+              flex: 1,
               border: '2px solid #2b2836',
-              borderRadius: 10,
-              padding: '5px 10px',
-              fontSize: 13,
+              borderRadius: 8,
+              padding: '6px 0',
+              fontSize: 12,
               fontWeight: 800,
               background: '#ef4444',
               color: '#fff',
               cursor: 'pointer',
-              boxShadow: '0 2px 0 #2b2836'
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
-            🗑
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
           </button>
         </div>
       </div>

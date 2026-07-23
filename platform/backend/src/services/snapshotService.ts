@@ -23,7 +23,8 @@ export class SnapshotService {
       avatar: p.avatar,
       presence: p.presence,
       ready: p.ready,
-      score
+      score,
+      joinedAt: p.joinedAt
     };
   }
 
@@ -32,9 +33,9 @@ export class SnapshotService {
     snap: SessionSnapshotRaw,
     view: { role: 'host' } | { role: 'player'; playerId: string }
   ): SessionStatePayload {
-    const players = Object.entries(snap.players).map(([id, p]) =>
-      this.toPublic(id, p, snap.scores[id] ?? 0)
-    );
+    const players = Object.entries(snap.players)
+      .sort((a, b) => (a[1].joinedAt || 0) - (b[1].joinedAt || 0))
+      .map(([id, p]) => this.toPublic(id, p, snap.scores[id] ?? 0));
     const payload: SessionStatePayload = {
       sessionId,
       code: snap.state.code,

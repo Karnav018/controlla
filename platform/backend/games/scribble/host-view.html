@@ -229,13 +229,9 @@
     const overlay = document.getElementById('overlay');
     if (state.phase === 'choosing' && state.drawer) {
       overlay.className = 'show';
-      document.getElementById('ovTitle').textContent = 'Choose a Word!';
-      document.getElementById('ovTime').textContent = 'Drawer: ' + state.drawer.name;
-      document.getElementById('ovChoices').innerHTML = `
-        <div class="wordBtn">television</div>
-        <div class="wordBtn">hill</div>
-        <div class="wordBtn">shirt</div>
-      `;
+      document.getElementById('ovTitle').textContent = 'Picasso is Picking a Word…';
+      document.getElementById('ovTime').textContent = 'Waiting for ' + state.drawer.name + ' to pick on their phone';
+      document.getElementById('ovChoices').innerHTML = '';
     } else if (state.phase === 'reveal') {
       overlay.className = 'show';
       document.getElementById('ovTitle').textContent = 'THE WORD WAS!';
