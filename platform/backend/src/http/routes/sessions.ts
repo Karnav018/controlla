@@ -6,7 +6,7 @@ import type { PluginRuntimePort } from '../../bus/types';
 import type { PlayerService } from '../../services/playerService';
 import type { SessionService } from '../../services/sessionService';
 import type { TokenService } from '../../services/tokenService';
-import { requireHost, requirePlayer, detectHost } from '../middleware/auth';
+import { requireHost, requirePlayer, detectHost, requireHostOrMaster } from '../middleware/auth';
 import { rateLimit } from '../middleware/rateLimit';
 import { validateBody } from '../middleware/validate';
 import { AppError } from '../errors';
@@ -59,9 +59,14 @@ export function sessionsRouter(deps: RouteDeps): Router {
     res.status(204).end();
   });
 
-  r.post('/sessions/:id/start', requireHost(tokens), validateBody(StartRequestSchema), async (req, res) => {
+  r.post('/sessions/:id/kick/:playerId', requireHostOrMaster(tokens, store), async (req, res) => {
+    await players.leave(String(req.params.id), String(req.params.playerId));
+    res.status(204).end();
+  });
+
+  r.post('/sessions/:id/start', requireHostOrMaster(tokens, store), validateBody(StartRequestSchema), async (req, res) => {
     const body = res.locals.body as StartRequest;
-    await sessions.startSession(String(req.params.id), body.gameId, body.options);
+    await sessions.startSession(String(req.params.id), body.gameId ?? 'scribble', body.options);
     res.status(204).end();
   });
 

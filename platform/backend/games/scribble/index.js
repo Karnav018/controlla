@@ -75,7 +75,7 @@ export function createPlugin() {
       if (playerId === drawerId) {
         return {
           layoutVersion: 1,
-          components: [label('t', `Draw: ${word.toUpperCase()}`), { kind: 'canvas', id: 'canvas' }]
+          components: [label('t', `🎨 Picasso (Drawer): ${word.toUpperCase()}`), { kind: 'canvas', id: 'canvas' }]
         };
       }
       if (guessed.has(playerId)) {

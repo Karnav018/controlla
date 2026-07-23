@@ -274,28 +274,36 @@ export function useHostSession(): HostSession {
       setSelectedGameId(gameId);
       localStorage.setItem(GAME_KEY, gameId);
       setLastResultsLocal(null);
-      setSnapshot((s) => (s ? { ...s, lastResults: null } : s));
-      if (!sessionRef.current) {
-        setBusy(true);
-        void createSession()
-          .then((res) => {
-            const stored: StoredSession = { sessionId: res.sessionId, hostToken: res.hostToken, code: res.code };
-            localStorage.setItem(STORE_KEY, JSON.stringify(stored));
-            setSession(stored);
-            connectSocket(stored);
-          })
-          .catch((err) => toast('ERROR', err?.message ?? 'Could not create a session'))
-          .finally(() => setBusy(false));
+      setSnapshot(null);
+
+      // Always generate a fresh unique room session & QR code
+      if (sessionRef.current) {
+        socketRef.current?.disconnect();
+        socketRef.current = null;
+        localStorage.removeItem(STORE_KEY);
+        setSession(null);
       }
+
+      setBusy(true);
+      void createSession()
+        .then((res) => {
+          const stored: StoredSession = { sessionId: res.sessionId, hostToken: res.hostToken, code: res.code };
+          localStorage.setItem(STORE_KEY, JSON.stringify(stored));
+          setSession(stored);
+          connectSocket(stored);
+        })
+        .catch((err) => toast('ERROR', err?.message ?? 'Could not create a session'))
+        .finally(() => setBusy(false));
     },
     [connectSocket, toast]
   );
 
   const backToSelect = useCallback(() => {
-    // Players stay connected — the session outlives game choices.
-    setSelectedGameId(null);
-    localStorage.removeItem(GAME_KEY);
-  }, []);
+    if (sessionRef.current) {
+      try { send('HOST_COMMAND', { command: 'END_SESSION' }); } catch {}
+    }
+    clearLocal();
+  }, [clearLocal, send]);
 
   const startGame = useCallback(() => {
     if (!selectedGameId) return;

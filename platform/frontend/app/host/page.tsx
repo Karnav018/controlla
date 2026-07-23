@@ -40,7 +40,11 @@ export default function HostPage() {
             padding: '0 34px'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 13 }}>
+          <div
+            onClick={s.backToSelect}
+            style={{ display: 'flex', alignItems: 'center', gap: 13, cursor: 'pointer' }}
+            title="Return Home"
+          >
             <div
               style={{
                 width: 34,
@@ -60,17 +64,18 @@ export default function HostPage() {
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            {s.session && (
-              <div
-                className="font-mono"
-                style={{ fontSize: 14, color: s.connected ? 'var(--muted)' : 'var(--warn)', letterSpacing: '.06em' }}
-              >
-                {s.connected ? s.session.code : `${s.session.code} · reconnecting…`}
-              </div>
-            )}
             <div className="font-mono" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: 'var(--faint)' }}>
               {STEPS.map(([label, i]) => (
-                <span key={label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span
+                  key={label}
+                  onClick={label === 'Pick game' ? s.backToSelect : undefined}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    cursor: label === 'Pick game' ? 'pointer' : 'default'
+                  }}
+                >
                   <span style={{ color: order === i ? 'var(--accent)' : order > i ? 'var(--muted)' : 'var(--faint)' }}>
                     {label}
                   </span>

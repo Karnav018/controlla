@@ -1,21 +1,14 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import LobbyPage from './pages/LobbyPage';
-import GamePage from './pages/GamePage';
-import ResultPage from './pages/ResultPage';
+import { useEffect } from 'react';
 
 function App() {
+  useEffect(() => {
+    window.location.href = `${window.location.protocol}//${window.location.hostname}:3000/host`;
+  }, []);
+
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <div className="h-screen w-screen overflow-hidden select-none">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/lobby/:roomCode" element={<LobbyPage />} />
-          <Route path="/game/:roomCode" element={<GamePage />} />
-          <Route path="/results/:roomCode" element={<ResultPage />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0b0c12', color: '#fff', fontFamily: 'sans-serif' }}>
+      <h2>Redirecting to Controlla Scribble Game...</h2>
+    </div>
   );
 }
 

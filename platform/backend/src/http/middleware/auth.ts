@@ -1,5 +1,6 @@
 import type { Request, RequestHandler } from 'express';
 import type { TokenService } from '../../services/tokenService';
+import type { LiveStore } from '../../redis/liveStore';
 import { GameSession } from '../../db/models/gameSession';
 import { AppError } from '../errors';
 
@@ -42,6 +43,41 @@ export function requirePlayer(tokens: TokenService): RequestHandler {
     }
     res.locals.playerId = claims.playerId;
     next();
+  };
+}
+
+export function requireHostOrMaster(tokens: TokenService, store: LiveStore): RequestHandler {
+  return async (req, res, next) => {
+    try {
+      const token = bearer(req);
+      const claims = token ? tokens.verifyClientToken(token) : null;
+      if (!token || !claims || claims.sessionId !== req.params.id) {
+        throw new AppError(403, 'FORBIDDEN');
+      }
+
+      if (claims.role === 'host') {
+        const doc = await GameSession.findById(claims.sessionId).select('hostTokenHash').lean();
+        if (!doc || doc.hostTokenHash !== tokens.hashToken(token)) throw new AppError(403, 'FORBIDDEN');
+        res.locals.sessionId = claims.sessionId;
+        return next();
+      }
+
+      if (claims.role === 'player' && claims.playerId) {
+        const playersMap = await store.getPlayers(claims.sessionId);
+        const playerEntries = Object.entries(playersMap as Record<string, { joinedAt: number }>);
+        const sorted = playerEntries.sort((a, b) => a[1].joinedAt - b[1].joinedAt);
+        const firstPlayer = sorted[0];
+        if (firstPlayer && firstPlayer[0] === claims.playerId) {
+          res.locals.sessionId = claims.sessionId;
+          res.locals.playerId = claims.playerId;
+          return next();
+        }
+      }
+
+      throw new AppError(403, 'FORBIDDEN');
+    } catch (err) {
+      next(err);
+    }
   };
 }
 

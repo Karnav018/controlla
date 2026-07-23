@@ -16,7 +16,7 @@ async function main(): Promise<void> {
   await deps.loader.discover(); // provider game packages from GAMES_DIR → registry + installedPlugins
   const server = buildServer(deps);
 
-  await new Promise<void>((resolve) => server.httpServer.listen(cfg.PORT, resolve));
+  await new Promise<void>((resolve) => server.httpServer.listen(cfg.PORT, '0.0.0.0', resolve));
 
   // Recovery AFTER listen: overdue grace/rotation timers fire into a fully
   // wired server, and sessions left 'playing' by a dead process are aborted

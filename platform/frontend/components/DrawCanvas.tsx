@@ -11,20 +11,16 @@ interface Props {
 type Stroke = { c: number; w: number; p: Array<[number, number]> };
 
 const WIDTHS = [4, 10, 22];
-const CHUNK = 80; // points per CONTROLLER_INPUT message (fits the 2000-char value budget)
+const CHUNK = 80;
 
-/**
- * The `canvas` layout component: a freehand drawing surface for the phone.
- * Coordinates are quantized to a 0..1000 square and streamed to the game as
- * stroke chunks ("colorIx|width|x,y;x,y;…"); the TV re-renders them from
- * host state. Local echo keeps drawing latency at zero for the drawer.
- */
 export function DrawCanvas({ controlId, onInput }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const strokesRef = useRef<Stroke[]>([]);
   const liveRef = useRef<Stroke | null>(null);
   const [colorIx, setColorIx] = useState(0);
   const [width, setWidth] = useState(WIDTHS[1]!);
+  const [toolMode, setToolMode] = useState<'brush' | 'eraser'>('brush');
+  const [isLandscape, setIsLandscape] = useState(false);
 
   const redraw = () => {
     const canvas = canvasRef.current;
@@ -35,7 +31,7 @@ export function DrawCanvas({ controlId, onInput }: Props) {
     ctx2d.lineCap = 'round';
     ctx2d.lineJoin = 'round';
     for (const s of [...strokesRef.current, ...(liveRef.current ? [liveRef.current] : [])]) {
-      ctx2d.strokeStyle = CANVAS_COLORS[s.c] ?? '#111318';
+      ctx2d.strokeStyle = s.c === 99 ? '#ffffff' : (CANVAS_COLORS[s.c] ?? '#111318');
       ctx2d.lineWidth = Math.max(1, s.w * scale);
       ctx2d.beginPath();
       s.p.forEach(([x, y], i) => (i === 0 ? ctx2d.moveTo(x * scale, y * scale) : ctx2d.lineTo(x * scale, y * scale)));
@@ -47,16 +43,34 @@ export function DrawCanvas({ controlId, onInput }: Props) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const fit = () => {
-      const size = canvas.parentElement?.clientWidth ?? 320;
+      const parent = canvas.parentElement;
+      const landscape = window.innerWidth > window.innerHeight && window.innerWidth < 1100;
+      setIsLandscape(landscape);
+
+      let size = 320;
+      if (parent) {
+        if (landscape) {
+          size = Math.min(parent.clientWidth * 0.6, window.innerHeight - 100);
+        } else {
+          size = Math.min(parent.clientWidth, window.innerHeight - 200);
+        }
+      }
       canvas.width = size * (window.devicePixelRatio || 1);
-      canvas.height = canvas.width;
+      canvas.height = size * (window.devicePixelRatio || 1);
+      canvas.style.width = `${size}px`;
       canvas.style.height = `${size}px`;
       redraw();
     };
+
     fit();
     window.addEventListener('resize', fit);
-    return () => window.removeEventListener('resize', fit);
+    window.addEventListener('orientationchange', fit);
+    return () => {
+      window.removeEventListener('resize', fit);
+      window.removeEventListener('orientationchange', fit);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -74,7 +88,8 @@ export function DrawCanvas({ controlId, onInput }: Props) {
 
   const down = (e: React.PointerEvent) => {
     e.currentTarget.setPointerCapture(e.pointerId);
-    liveRef.current = { c: colorIx, w: width, p: [toUnit(e)] };
+    const actualColor = toolMode === 'eraser' ? 99 : colorIx;
+    liveRef.current = { c: actualColor, w: width, p: [toUnit(e)] };
     redraw();
   };
 
@@ -83,10 +98,9 @@ export function DrawCanvas({ controlId, onInput }: Props) {
     if (!live) return;
     const [x, y] = toUnit(e);
     const [lx, ly] = live.p[live.p.length - 1]!;
-    if (Math.abs(x - lx) + Math.abs(y - ly) < 6) return; // sample sparsely
+    if (Math.abs(x - lx) + Math.abs(y - ly) < 6) return;
     live.p.push([x, y]);
     if (live.p.length >= CHUNK) {
-      // Ship the chunk; continue the line from its last point.
       flush(live);
       strokesRef.current.push(live);
       liveRef.current = { c: live.c, w: live.w, p: [[x, y]] };
@@ -104,67 +118,185 @@ export function DrawCanvas({ controlId, onInput }: Props) {
     redraw();
   };
 
-  const tool = (active: boolean): React.CSSProperties => ({
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    border: active ? '2.5px solid var(--accent)' : '1.5px solid var(--line2)',
-    cursor: 'pointer',
-    flex: 'none'
-  });
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <div style={{ background: '#fff', borderRadius: 18, overflow: 'hidden', boxShadow: '0 16px 44px rgba(0,0,0,.45)' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: isLandscape ? 'row' : 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 14,
+        width: '100%'
+      }}
+    >
+      {/* Canvas Box */}
+      <div
+        style={{
+          background: '#ffffff',
+          borderRadius: 20,
+          border: '2.5px solid #2b2836',
+          boxShadow: '0 6px 0 #2b2836',
+          overflow: 'hidden',
+          flex: 'none'
+        }}
+      >
         <canvas
           ref={canvasRef}
           onPointerDown={down}
           onPointerMove={move}
           onPointerUp={up}
           onPointerCancel={up}
-          style={{ display: 'block', width: '100%', touchAction: 'none' }}
+          style={{ display: 'block', touchAction: 'none', background: '#ffffff' }}
         />
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-        {CANVAS_COLORS.map((c, i) => (
-          <div
-            key={c}
-            onClick={() => setColorIx(i)}
-            style={{ ...tool(colorIx === i), background: c, boxShadow: c === '#ffffff' ? 'inset 0 0 0 1px rgba(0,0,0,.2)' : undefined }}
-            title={i === CANVAS_COLORS.length - 1 ? 'Eraser' : undefined}
-          />
-        ))}
-        <span style={{ flex: 1 }} />
-        {WIDTHS.map((w) => (
-          <div
-            key={w}
-            onClick={() => setWidth(w)}
-            style={{ ...tool(width === w), display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--panel)' }}
+
+      {/* 3D Party Control Toolbar */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 10,
+          background: '#ffffff',
+          border: '2.5px solid #2b2836',
+          borderRadius: 18,
+          padding: '12px 14px',
+          boxShadow: '0 5px 0 #2b2836',
+          flex: 1,
+          width: isLandscape ? 'auto' : '100%'
+        }}
+      >
+        {/* Tool Mode Buttons */}
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 2 }}>
+          <button
+            onClick={() => setToolMode('brush')}
+            style={{
+              border: '2px solid #2b2836',
+              borderRadius: 12,
+              padding: '6px 14px',
+              fontSize: 13,
+              fontWeight: 800,
+              background: toolMode === 'brush' ? '#fcd34d' : '#fff',
+              color: '#2b2836',
+              cursor: 'pointer',
+              boxShadow: toolMode === 'brush' ? '0 2.5px 0 #2b2836' : 'none'
+            }}
           >
-            <span style={{ width: Math.max(4, w * 0.8), height: Math.max(4, w * 0.8), borderRadius: '50%', background: 'var(--text)' }} />
-          </div>
-        ))}
-        <div
-          onClick={() => {
-            strokesRef.current.pop();
-            redraw();
-            onInput(controlId, 'undo');
-          }}
-          className="btn-ghost"
-          style={{ padding: '8px 13px', border: '1px solid var(--line2)', borderRadius: 10, fontSize: 13, cursor: 'pointer' }}
-        >
-          ↩ Undo
+            ✏️ Brush
+          </button>
+          <button
+            onClick={() => setToolMode('eraser')}
+            style={{
+              border: '2px solid #2b2836',
+              borderRadius: 12,
+              padding: '6px 14px',
+              fontSize: 13,
+              fontWeight: 800,
+              background: toolMode === 'eraser' ? '#fcd34d' : '#fff',
+              color: '#2b2836',
+              cursor: 'pointer',
+              boxShadow: toolMode === 'eraser' ? '0 2.5px 0 #2b2836' : 'none'
+            }}
+          >
+            🧹 Eraser
+          </button>
         </div>
-        <div
-          onClick={() => {
-            strokesRef.current = [];
-            redraw();
-            onInput(controlId, 'clear');
-          }}
-          className="btn-ghost"
-          style={{ padding: '8px 13px', border: '1px solid var(--line2)', borderRadius: 10, fontSize: 13, cursor: 'pointer' }}
-        >
-          ✕ Clear
+
+        {/* Color Palette & Brush Sizes & Actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          {CANVAS_COLORS.map((c, i) => (
+            <div
+              key={c}
+              onClick={() => {
+                setColorIx(i);
+                setToolMode('brush');
+              }}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: '50%',
+                background: c,
+                border: colorIx === i && toolMode === 'brush' ? '3px solid #2b2836' : '2px solid #2b2836',
+                transform: colorIx === i && toolMode === 'brush' ? 'scale(1.15)' : 'scale(1)',
+                cursor: 'pointer',
+                boxShadow: '0 2px 0 #2b2836',
+                transition: 'transform 0.1s ease'
+              }}
+            />
+          ))}
+
+          <div style={{ flex: 1 }} />
+
+          {/* Stroke Widths */}
+          {WIDTHS.map((w) => (
+            <div
+              key={w}
+              onClick={() => setWidth(w)}
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 10,
+                border: width === w ? '2.5px solid #2b2836' : '1.5px solid #d1d5db',
+                background: width === w ? '#fef08a' : '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <span
+                style={{
+                  width: Math.max(4, w * 0.6),
+                  height: Math.max(4, w * 0.6),
+                  borderRadius: '50%',
+                  background: '#2b2836'
+                }}
+              />
+            </div>
+          ))}
+
+          {/* Undo */}
+          <button
+            onClick={() => {
+              strokesRef.current.pop();
+              redraw();
+              onInput(controlId, 'undo');
+            }}
+            style={{
+              border: '2px solid #2b2836',
+              borderRadius: 10,
+              padding: '5px 10px',
+              fontSize: 13,
+              fontWeight: 800,
+              background: '#fff',
+              color: '#2b2836',
+              cursor: 'pointer',
+              boxShadow: '0 2px 0 #2b2836'
+            }}
+          >
+            ↩
+          </button>
+
+          {/* Clear */}
+          <button
+            onClick={() => {
+              strokesRef.current = [];
+              redraw();
+              onInput(controlId, 'clear');
+            }}
+            style={{
+              border: '2px solid #2b2836',
+              borderRadius: 10,
+              padding: '5px 10px',
+              fontSize: 13,
+              fontWeight: 800,
+              background: '#ef4444',
+              color: '#fff',
+              cursor: 'pointer',
+              boxShadow: '0 2px 0 #2b2836'
+            }}
+          >
+            🗑
+          </button>
         </div>
       </div>
     </div>

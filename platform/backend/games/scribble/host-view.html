@@ -3,65 +3,186 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Scribble — TV</title>
+<title>Scribble Party — TV View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; }
+  html, body { margin: 0; height: 100%; overflow: hidden; }
   body {
-    font-family: ui-rounded, 'SF Pro Rounded', 'Nunito', system-ui, sans-serif;
-    background:
-      radial-gradient(circle at 15% 20%, rgba(147, 51, 234, .08), transparent 40%),
-      radial-gradient(circle at 85% 80%, rgba(37, 99, 235, .08), transparent 40%),
-      #f6f1e7;
-    color: #2a2438;
-    display: flex; flex-direction: column; padding: 22px 26px; gap: 14px;
+    font-family: 'Baloo 2', 'Nunito', system-ui, sans-serif;
+    background: #fbf8f1;
+    background-image: radial-gradient(#e5dec9 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    color: #2b2836;
+    display: flex; flex-direction: column; padding: 18px 22px; gap: 14px;
   }
-  .top { display: flex; align-items: center; justify-content: center; gap: 20px; }
-  .pill { font-size: 13px; font-weight: 800; letter-spacing: .12em; color: #8b8399;
-          background: #fff; border: 2px solid #e6ddcc; border-radius: 999px; padding: 6px 14px; }
-  #hint { font-size: 34px; font-weight: 900; letter-spacing: .32em; color: #2a2438; text-transform: uppercase; }
+
+  /* Top Bar */
+  .topBar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #ffffff; border: 2.5px solid #2b2836; border-radius: 20px;
+    padding: 12px 22px; box-shadow: 0 5px 0 #2b2836; gap: 16px;
+  }
+  .topGroup { display: flex; alignItems: center; gap: 12px; }
+  .pillYellow {
+    background: #fcd34d; border: 2px solid #2b2836; border-radius: 999px;
+    padding: 5px 16px; font-weight: 800; font-size: 15px; letter-spacing: 0.05em; color: #2b2836;
+    box-shadow: 0 2px 0 #2b2836;
+  }
+  .pillTheme {
+    background: #ffffff; border: 2px solid #2b2836; border-radius: 999px;
+    padding: 5px 14px; font-weight: 700; font-size: 14px; color: #2b2836;
+  }
+  .pillTheme span { color: #f97316; font-weight: 800; }
+  
+  .timeWrap { display: flex; align-items: center; gap: 10px; flex: 1; max-width: 320px; }
+  .timeTitle { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: #78716c; text-transform: uppercase; }
+  .barTrack { flex: 1; height: 12px; background: #e7e5e4; border: 2px solid #2b2836; border-radius: 999px; overflow: hidden; }
+  .barFill { height: 100%; background: #10b981; transition: width 0.3s linear; width: 100%; }
+  .timerVal { font-size: 13px; font-weight: 800; color: #2b2836; min-width: 30px; }
+
+  .wordSection { display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .wordSub { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: #78716c; text-transform: uppercase; }
+  #hint { font-size: 26px; font-weight: 800; letter-spacing: 0.28em; color: #2b2836; font-family: monospace; text-transform: uppercase; }
   #hint.reveal { color: #16a34a; }
-  #timer { font-size: 18px; font-weight: 900; min-width: 64px; text-align: center; color: #6d6480;
-           background: #fff; border: 2px solid #e6ddcc; border-radius: 999px; padding: 7px 12px; }
-  #timer.low { color: #e11d48; animation: blink 1s infinite; }
-  @keyframes blink { 50% { opacity: .35; } }
-  .main { flex: 1; min-height: 0; display: flex; gap: 20px; justify-content: center; }
-  .boardWrap { position: relative; height: 100%; aspect-ratio: 1; }
-  #board { position: absolute; inset: 0; width: 100%; height: 100%; background: #fff;
-           border-radius: 20px; border: 3px solid #2a2438; box-shadow: 8px 8px 0 rgba(42, 36, 56, .12); }
-  #overlay { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center;
-             justify-content: center; gap: 8px; border-radius: 20px; background: rgba(255,255,255,.9); }
+
+  .leaveBtn {
+    background: #ffffff; border: 2px solid #2b2836; border-radius: 999px;
+    padding: 6px 18px; font-weight: 800; font-size: 14px; color: #2b2836;
+    box-shadow: 0 2.5px 0 #2b2836; cursor: pointer;
+  }
+
+  /* Layout Main Grid */
+  .mainGrid { flex: 1; min-height: 0; display: flex; gap: 18px; }
+
+  /* Left Rail: Players */
+  .railLeft {
+    width: 250px; background: #ffffff; border: 2.5px solid #2b2836;
+    border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+    box-shadow: 0 6px 0 #2b2836;
+  }
+  .railHeader { display: flex; justify-content: space-between; font-weight: 800; font-size: 12px; letter-spacing: 0.08em; color: #78716c; text-transform: uppercase; }
+  .playerList { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+  .playerCard {
+    display: flex; align-items: center; gap: 10px; background: #ffffff;
+    border: 2px solid #2b2836; border-radius: 14px; padding: 8px 12px;
+    box-shadow: 0 3px 0 #2b2836; transition: transform 0.1s ease;
+  }
+  .playerCard.isDrawer { background: #fef3c7; border-color: #f59e0b; }
+  .rankNum { font-weight: 800; font-size: 14px; color: #2b2836; min-width: 14px; }
+  .pAv {
+    width: 32px; height: 32px; border-radius: 50%; border: 2px solid #2b2836;
+    display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px;
+  }
+  .pInfo { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .pName { font-weight: 800; font-size: 14px; color: #2b2836; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pBadge {
+    display: inline-block; background: #2b2836; color: #fcd34d; font-size: 9px;
+    font-weight: 900; padding: 1px 6px; borderRadius: 4px; letter-spacing: 0.06em; margin-top: 2px; width: fit-content;
+  }
+  .pScore { font-weight: 800; font-size: 15px; color: #2b2836; }
+
+  /* Center Area: Canvas Whiteboard */
+  .centerWrap { flex: 1; position: relative; display: flex; flex-direction: column; }
+  .canvasBox {
+    position: relative; flex: 1; width: 100%; height: 100%; background: #ffffff;
+    border: 2.5px solid #2b2836; border-radius: 20px; box-shadow: 0 6px 0 #2b2836; overflow: hidden;
+  }
+  #board { width: 100%; height: 100%; display: block; background: #ffffff; }
+
+  /* Modal Overlay (Choose Word / State Display) */
+  #overlay {
+    position: absolute; inset: 0; display: none; flex-direction: column;
+    align-items: center; justify-content: center; background: rgba(43, 40, 54, 0.45);
+    backdrop-filter: blur(4px); z-index: 10; padding: 20px;
+  }
   #overlay.show { display: flex; }
-  #overlay .small { font-size: 14px; font-weight: 800; letter-spacing: .2em; color: #8b8399; }
-  #overlay .big { font-size: 46px; font-weight: 900; color: #2a2438; text-transform: uppercase; letter-spacing: .04em; }
-  .rail { width: 280px; display: flex; flex-direction: column; gap: 10px; background: #fff;
-          border: 3px solid #2a2438; border-radius: 20px; padding: 16px; box-shadow: 8px 8px 0 rgba(42,36,56,.12); }
-  .player { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 15px; }
-  .av { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        color: #fff; font-weight: 900; flex: none; border: 2.5px solid #2a2438; }
-  .player .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .player .pt { color: #9333ea; font-variant-numeric: tabular-nums; }
-  .badge { font-size: 12px; }
-  #feed { margin-top: auto; border-top: 2px dashed #e6ddcc; padding-top: 10px; display: flex;
-          flex-direction: column; gap: 5px; max-height: 150px; overflow: hidden; }
-  #feed div { font-size: 12.5px; font-weight: 700; color: #8b8399; white-space: nowrap;
-              overflow: hidden; text-overflow: ellipsis; }
-  #feed div.correct { color: #16a34a; }
-  #feed div.reveal { color: #e11d48; }
+  .modalCard {
+    background: #fffdf8; border: 3px solid #2b2836; border-radius: 24px;
+    padding: 28px 36px; display: flex; flex-direction: column; align-items: center; gap: 16px;
+    box-shadow: 0 8px 0 #2b2836; max-width: 480px; width: 100%; text-align: center;
+    animation: popIn 0.3s ease;
+  }
+  @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .modalTitle { font-size: 28px; font-weight: 800; color: #2b2836; }
+  .modalTime {
+    background: #fef08a; border: 2px solid #2b2836; border-radius: 999px;
+    padding: 4px 16px; font-size: 13px; font-weight: 800; color: #2b2836;
+  }
+  .wordChoices { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; width: 100%; margin-top: 6px; }
+  .wordBtn {
+    background: #fcd34d; border: 2.5px solid #2b2836; border-radius: 999px;
+    padding: 10px 22px; font-size: 16px; font-weight: 800; color: #2b2836;
+    box-shadow: 0 4px 0 #2b2836; text-transform: lowercase;
+  }
+
+  /* Right Rail: Chat & Feed */
+  .railRight {
+    width: 270px; background: #ffffff; border: 2.5px solid #2b2836;
+    border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+    box-shadow: 0 6px 0 #2b2836;
+  }
+  .chatHeader { font-weight: 800; font-size: 12px; letter-spacing: 0.08em; color: #78716c; text-transform: uppercase; }
+  .chatBox { flex: 1; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+  .chatSys {
+    background: #f3f4f6; border: 1.5px solid #d1d5db; border-radius: 10px;
+    padding: 6px 12px; font-size: 12px; font-weight: 700; color: #6b7280; font-style: italic; text-align: center;
+  }
+  .chatMsg { font-size: 13px; font-weight: 700; color: #2b2836; word-break: break-word; }
+  .chatMsg.correct { color: #16a34a; font-weight: 800; background: #dcfce7; padding: 4px 8px; border-radius: 8px; }
 </style>
 </head>
 <body>
-  <div class="top">
-    <span class="pill" id="round">ROUND –</span>
-    <span id="hint">· · ·</span>
-    <span id="timer">–</span>
-  </div>
-  <div class="main">
-    <div class="boardWrap">
-      <canvas id="board"></canvas>
-      <div id="overlay"><div class="small" id="ovSmall"></div><div class="big" id="ovBig"></div></div>
+  <!-- Top Bar -->
+  <div class="topBar">
+    <div class="topGroup">
+      <div class="pillYellow" id="round">ROUND 1 / 3</div>
+      <div class="pillTheme">THEME: <span>Classic</span></div>
     </div>
-    <div class="rail"><div id="players"></div><div id="feed"></div></div>
+    
+    <div class="timeWrap">
+      <span class="timeTitle">TIME</span>
+      <div class="barTrack"><div class="barFill" id="barFill"></div></div>
+      <span class="timerVal" id="timerVal">80s</span>
+    </div>
+
+    <div class="wordSection">
+      <span class="wordSub">DRAW THIS WORD:</span>
+      <span id="hint">_ _ _ _ _ _ _ _</span>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="mainGrid">
+    <!-- Left: Players -->
+    <div class="railLeft">
+      <div class="railHeader"><span>PLAYERS</span><span>SCORE</span></div>
+      <div class="playerList" id="players"></div>
+    </div>
+
+    <!-- Center: Whiteboard -->
+    <div class="centerWrap">
+      <div class="canvasBox">
+        <canvas id="board"></canvas>
+        <div id="overlay">
+          <div class="modalCard">
+            <div class="modalTitle" id="ovTitle">Choose a Word!</div>
+            <div class="modalTime" id="ovTime">Time left: 80s</div>
+            <div class="wordChoices" id="ovChoices"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Chat Feed -->
+    <div class="railRight">
+      <div class="chatHeader">GUESS & CHAT</div>
+      <div class="chatBox" id="feed">
+        <div class="chatSys">Round 1 started!</div>
+      </div>
+    </div>
   </div>
 
 <script>
@@ -72,12 +193,13 @@
   function drawBoard() {
     const canvas = document.getElementById('board');
     const wrap = canvas.parentElement;
-    const px = wrap.clientHeight * (window.devicePixelRatio || 1);
-    canvas.width = px; canvas.height = px;
+    const pxW = wrap.clientWidth * (window.devicePixelRatio || 1);
+    const pxH = wrap.clientHeight * (window.devicePixelRatio || 1);
+    canvas.width = pxW; canvas.height = pxH;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, px, px);
+    ctx.clearRect(0, 0, pxW, pxH);
     if (!state) return;
-    const scale = px / 1000;
+    const scale = Math.min(pxW, pxH) / 1000;
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     for (const s of state.strokes || []) {
       ctx.strokeStyle = (state.colors || [])[s.c] || '#111318';
@@ -91,45 +213,73 @@
 
   function render() {
     if (!state) return;
-    document.getElementById('round').textContent = 'ROUND ' + Math.max(1, state.round) + '/' + state.totalRounds;
+    document.getElementById('round').textContent = 'ROUND ' + Math.max(1, state.round) + ' / ' + (state.totalRounds || 3);
     const hint = document.getElementById('hint');
-    hint.textContent = state.phase === 'choosing' ? '· · ·' : (state.hint || '');
-    hint.className = state.phase === 'reveal' ? 'reveal' : '';
+    if (state.phase === 'drawing' && state.hint) {
+      hint.textContent = state.hint.split('').join(' ');
+      hint.className = '';
+    } else if (state.phase === 'reveal') {
+      hint.textContent = (state.hint || '').toUpperCase();
+      hint.className = 'reveal';
+    } else {
+      hint.textContent = '· · · · · ·';
+      hint.className = '';
+    }
 
     const overlay = document.getElementById('overlay');
     if (state.phase === 'choosing' && state.drawer) {
       overlay.className = 'show';
-      document.getElementById('ovSmall').textContent = 'GET READY';
-      document.getElementById('ovBig').textContent = '✏️ ' + state.drawer.name + ' is picking…';
+      document.getElementById('ovTitle').textContent = 'Choose a Word!';
+      document.getElementById('ovTime').textContent = 'Drawer: ' + state.drawer.name;
+      document.getElementById('ovChoices').innerHTML = `
+        <div class="wordBtn">television</div>
+        <div class="wordBtn">hill</div>
+        <div class="wordBtn">shirt</div>
+      `;
     } else if (state.phase === 'reveal') {
       overlay.className = 'show';
-      document.getElementById('ovSmall').textContent = 'THE WORD WAS';
-      document.getElementById('ovBig').textContent = state.hint || '';
-    } else overlay.className = '';
+      document.getElementById('ovTitle').textContent = 'THE WORD WAS!';
+      document.getElementById('ovTime').textContent = (state.hint || '').toUpperCase();
+      document.getElementById('ovChoices').innerHTML = '';
+    } else {
+      overlay.className = '';
+    }
 
     const ranked = [...(state.players || [])].sort((a, b) => (state.points[b.id] || 0) - (state.points[a.id] || 0));
-    document.getElementById('players').innerHTML = ranked.map((p) => {
+    document.getElementById('players').innerHTML = ranked.map((p, idx) => {
       const isDrawer = state.drawer && state.drawer.id === p.id;
       const guessed = (state.guessed || []).includes(p.id);
-      return '<div class="player"><span class="av" style="background:' + colorFor(p.id) + '">' +
-        (p.name[0] || '?').toUpperCase() + '</span><span class="nm">' + p.name +
-        (isDrawer ? ' <span class="badge">✏️</span>' : '') + (guessed ? ' <span class="badge">✅</span>' : '') +
-        '</span><span class="pt">' + (state.points[p.id] || 0) + '</span></div>';
+      return `
+        <div class="playerCard ${isDrawer ? 'isDrawer' : ''}">
+          <span class="rankNum">${idx + 1}</span>
+          <span class="pAv" style="background:${colorFor(p.id)}">${(p.name[0] || '?').toUpperCase()}</span>
+          <div class="pInfo">
+            <span class="pName">${p.name} ${guessed ? '✅' : ''}</span>
+            ${isDrawer ? '<span class="pBadge">PICASSO</span>' : ''}
+          </div>
+          <span class="pScore">${state.points[p.id] || 0}</span>
+        </div>
+      `;
     }).join('');
 
-    document.getElementById('feed').innerHTML = (state.feed || []).slice(-5)
-      .map((f) => '<div class="' + f.kind + '">' + f.text.replace(/</g, '&lt;') + '</div>').join('');
+    const feedEl = document.getElementById('feed');
+    feedEl.innerHTML = '<div class="chatSys">Round ' + Math.max(1, state.round) + ' started!</div>' +
+      (state.feed || []).slice(-8).map((f) => `<div class="chatMsg ${f.kind === 'correct' ? 'correct' : ''}">${f.text.replace(/</g, '&lt;')}</div>`).join('');
+    
     drawBoard();
   }
 
   setInterval(() => {
-    const el = document.getElementById('timer');
     if (state && state.endsAt && state.phase === 'drawing') {
-      const s = Math.max(0, Math.ceil((state.endsAt - Date.now()) / 1000));
-      el.textContent = s + 's';
-      el.className = s <= 10 ? 'low' : '';
-    } else { el.textContent = '–'; el.className = ''; }
-  }, 400);
+      const remaining = Math.max(0, Math.ceil((state.endsAt - Date.now()) / 1000));
+      document.getElementById('timerVal').textContent = remaining + 's';
+      const pct = Math.max(0, Math.min(100, (remaining / 80) * 100));
+      document.getElementById('barFill').style.width = pct + '%';
+    } else {
+      document.getElementById('timerVal').textContent = '80s';
+      document.getElementById('barFill').style.width = '100%';
+    }
+  }, 300);
 
   window.addEventListener('resize', drawBoard);
   window.addEventListener('message', (e) => {

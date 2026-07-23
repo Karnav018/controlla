@@ -1,6 +1,8 @@
 import type { CreateSessionResponse, GameInfo, SessionResultsResponse } from './protocol';
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ??
+  (typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:4000` : 'http://localhost:4000');
 
 export class ApiError extends Error {
   constructor(

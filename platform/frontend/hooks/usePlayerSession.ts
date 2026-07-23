@@ -23,6 +23,7 @@ export interface PlayerSession {
   status: SessionStatus;
   players: PlayerPublic[];
   me: PlayerPublic | null;
+  isMaster: boolean;
   layout: ControllerLayout | null;
   /** Catalogue entry for the game currently running (console URL etc.). */
   currentGame: GameInfo | null;
@@ -31,6 +32,8 @@ export interface PlayerSession {
   setReady(ready: boolean): void;
   sendInput(controlId: string, action: string, value?: string | number | boolean): void;
   leaveParty(): void;
+  startGame(gameId?: string): Promise<void>;
+  kickPlayer(targetPlayerId: string): Promise<void>;
 }
 
 interface StoredPlayer {
@@ -286,7 +289,38 @@ export function usePlayerSession(code: string, joinToken: string | null): Player
 
   const players = snapshot?.players ?? [];
   const me = players.find((p) => p.playerId === (snapshot?.you?.playerId ?? storedRef.current?.playerId)) ?? null;
+  const isMaster = me ? players.length > 0 && players[0].playerId === me.playerId : false;
   const currentGame = snapshot?.game ? (games.find((g) => g.gameId === snapshot.game?.gameId) ?? null) : null;
+
+  const startGame = useCallback(
+    async (gameId = 'scribble') => {
+      const stored = storedRef.current;
+      if (!stored) return;
+      await fetch(`${API_URL}/sessions/${stored.sessionId}/start`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          authorization: `Bearer ${stored.playerToken}`
+        },
+        body: JSON.stringify({ gameId })
+      });
+    },
+    []
+  );
+
+  const kickPlayer = useCallback(
+    async (targetPlayerId: string) => {
+      const stored = storedRef.current;
+      if (!stored) return;
+      await fetch(`${API_URL}/sessions/${stored.sessionId}/kick/${targetPlayerId}`, {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${stored.playerToken}`
+        }
+      });
+    },
+    []
+  );
 
   return {
     phase,
@@ -295,12 +329,15 @@ export function usePlayerSession(code: string, joinToken: string | null): Player
     status: snapshot?.status ?? 'lobby',
     players,
     me,
+    isMaster,
     layout,
     currentGame,
     notice,
     join,
     setReady,
     sendInput,
-    leaveParty
+    leaveParty,
+    startGame,
+    kickPlayer
   };
 }

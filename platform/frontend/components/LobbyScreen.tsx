@@ -74,27 +74,7 @@ export function LobbyScreen({ game, snapshot, players, busy, onBack, onStart }: 
           )}
         </div>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 16,
-            padding: '13px 26px',
-            background: 'var(--panel)',
-            border: '1px solid var(--line)',
-            borderRadius: 16
-          }}
-        >
-          <span style={{ fontSize: 12, color: 'var(--faint)', textTransform: 'uppercase', letterSpacing: '.14em' }}>
-            code
-          </span>
-          <span
-            className="font-mono"
-            style={{ fontWeight: 600, fontSize: 28, letterSpacing: '.22em', color: 'var(--accent)' }}
-          >
-            {code}
-          </span>
-        </div>
+
 
         {players.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, marginTop: 4 }}>
@@ -179,11 +159,14 @@ export function LobbyScreen({ game, snapshot, players, busy, onBack, onStart }: 
               border: '1px solid var(--line2)',
               borderRadius: 13,
               fontSize: 15,
-              fontWeight: 500,
-              cursor: 'pointer'
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6
             }}
           >
-            ← Change game
+            🏠 Return Home
           </div>
           <div
             className="font-grotesk"

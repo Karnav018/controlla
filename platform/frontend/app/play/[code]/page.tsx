@@ -22,6 +22,33 @@ function PlayInner() {
   const code = String(params.code ?? '').toUpperCase();
   const s = usePlayerSession(code, search.get('t'));
   const [nickname, setNickname] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const copyLink = async () => {
+    if (typeof window === 'undefined') return;
+    const url = window.location.href;
+    try {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
     <div
@@ -51,7 +78,7 @@ function PlayInner() {
             <div style={{ width: 10, height: 10, borderRadius: 3, background: 'var(--accent-ink)' }} />
           </div>
           <span className="font-grotesk" style={{ fontWeight: 700, fontSize: 17 }}>
-            Controlla
+            {s.currentGame?.name || 'Scribble'}
           </span>
         </div>
         <span className="font-mono" style={{ fontSize: 12.5, color: 'var(--faint)', letterSpacing: '.14em' }}>
@@ -168,56 +195,191 @@ function PlayInner() {
         )}
 
         {s.phase === 'in' && s.status === 'lobby' && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18, width: '100%', maxWidth: 440, margin: '0 auto' }}>
             {s.me && (
-              <div
-                className="font-grotesk"
-                style={{
-                  width: 84,
-                  height: 84,
-                  borderRadius: '50%',
-                  background: playerColor(s.me.playerId),
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 700,
-                  fontSize: 36,
-                  color: '#fff',
-                  boxShadow: s.me.ready ? '0 0 0 3px color-mix(in srgb, var(--accent) 60%, transparent)' : 'none',
-                  animation: 'popIn .4s ease'
-                }}
-              >
-                {initialOf(s.me.nickname)}
+              <div style={{ position: 'relative' }}>
+                <div
+                  className="font-grotesk"
+                  style={{
+                    width: 84,
+                    height: 84,
+                    borderRadius: '50%',
+                    background: playerColor(s.me.playerId),
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 700,
+                    fontSize: 36,
+                    color: '#fff',
+                    boxShadow: '0 0 0 3px color-mix(in srgb, var(--accent) 60%, transparent)',
+                    animation: 'popIn .4s ease'
+                  }}
+                >
+                  {initialOf(s.me.nickname)}
+                </div>
+                {s.isMaster && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: -4,
+                      right: -8,
+                      background: 'var(--accent)',
+                      color: 'var(--accent-ink)',
+                      fontSize: 11,
+                      fontWeight: 800,
+                      padding: '3px 8px',
+                      borderRadius: 999,
+                      boxShadow: '0 4px 10px rgba(0,0,0,.4)'
+                    }}
+                  >
+                    👑 MASTER
+                  </div>
+                )}
               </div>
             )}
             <div style={{ textAlign: 'center' }}>
               <div className="font-grotesk" style={{ fontWeight: 700, fontSize: 26 }}>
-                You&apos;re in{s.me ? `, ${s.me.nickname}` : ''}!
+                {s.isMaster ? `Room Master, ${s.me?.nickname}` : `You're in, ${s.me?.nickname}`}
               </div>
-              <div style={{ color: 'var(--muted)', fontSize: 14.5, marginTop: 8 }}>
-                Eyes on the TV — the game starts there.
+              <div style={{ color: 'var(--muted)', fontSize: 14.5, marginTop: 6 }}>
+                {s.isMaster ? 'You control the game start from your phone!' : 'Waiting for Room Master to start the game.'}
               </div>
               <div className="font-mono" style={{ color: 'var(--faint)', fontSize: 12.5, marginTop: 6 }}>
-                {s.players.length} in the room · {s.players.filter((p) => p.ready).length} ready
+                {s.players.length} in the room
               </div>
             </div>
-            <button
-              className="font-grotesk"
-              onClick={() => s.setReady(!s.me?.ready)}
-              style={{
-                border: s.me?.ready ? '1px solid var(--line2)' : 'none',
-                borderRadius: 16,
-                padding: '18px 44px',
-                fontSize: 19,
-                fontWeight: 700,
-                background: s.me?.ready ? 'transparent' : 'var(--accent)',
-                color: s.me?.ready ? 'var(--muted)' : 'var(--accent-ink)',
-                cursor: 'pointer',
-                WebkitTapHighlightColor: 'transparent'
-              }}
-            >
-              {s.me?.ready ? 'Not ready' : "I'm ready!"}
-            </button>
+
+            {s.isMaster ? (
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <button
+                  onClick={copyLink}
+                  style={{
+                    border: '1px solid var(--line2)',
+                    borderRadius: 14,
+                    padding: '12px 18px',
+                    background: 'rgba(255,255,255,0.06)',
+                    color: 'var(--text)',
+                    fontSize: 14,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8
+                  }}
+                >
+                  🔗 {copied ? 'Link Copied to Clipboard!' : 'Share Room Link to Friends'}
+                </button>
+
+                <button
+                  className="font-grotesk"
+                  onClick={() => s.players.length >= 2 && s.startGame('scribble')}
+                  disabled={s.players.length < 2}
+                  style={{
+                    border: 'none',
+                    borderRadius: 16,
+                    padding: '18px',
+                    fontSize: 20,
+                    fontWeight: 800,
+                    background: s.players.length >= 2 ? 'var(--accent)' : 'rgba(255,255,255,0.08)',
+                    color: s.players.length >= 2 ? 'var(--accent-ink)' : 'var(--faint)',
+                    cursor: s.players.length >= 2 ? 'pointer' : 'not-allowed',
+                    boxShadow: s.players.length >= 2 ? '0 8px 24px color-mix(in srgb, var(--accent) 40%, transparent)' : 'none',
+                    WebkitTapHighlightColor: 'transparent'
+                  }}
+                >
+                  {s.players.length >= 2 ? '🚀 START GAME' : 'Waiting for 2+ Players to Join...'}
+                </button>
+
+                {/* Player List for Master with Kick / Remove buttons */}
+                <div
+                  style={{
+                    background: 'var(--panel)',
+                    border: '1px solid var(--line2)',
+                    borderRadius: 16,
+                    padding: 14,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 10
+                  }}
+                >
+                  <div className="font-mono" style={{ fontSize: 11, color: 'var(--faint)', textTransform: 'uppercase', letterSpacing: '.1em' }}>
+                    Party Players ({s.players.length})
+                  </div>
+                  {s.players.map((p) => (
+                    <div
+                      key={p.playerId}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '8px 12px',
+                        background: 'rgba(255,255,255,0.03)',
+                        borderRadius: 10
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span
+                          style={{
+                            width: 28,
+                            height: 28,
+                            borderRadius: '50%',
+                            background: playerColor(p.playerId),
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#fff',
+                            fontWeight: 700,
+                            fontSize: 13
+                          }}
+                        >
+                          {initialOf(p.nickname)}
+                        </span>
+                        <span style={{ fontSize: 14.5, fontWeight: 600 }}>
+                          {p.nickname} {p.playerId === s.me?.playerId ? '(You)' : ''}
+                        </span>
+                      </div>
+                      {p.playerId !== s.me?.playerId && (
+                        <button
+                          onClick={() => s.kickPlayer(p.playerId)}
+                          style={{
+                            border: '1px solid color-mix(in srgb, var(--warn) 40%, transparent)',
+                            background: 'transparent',
+                            color: 'var(--warn)',
+                            borderRadius: 8,
+                            padding: '4px 10px',
+                            fontSize: 12,
+                            fontWeight: 600,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <button
+                className="font-grotesk"
+                onClick={() => s.setReady(!s.me?.ready)}
+                style={{
+                  border: s.me?.ready ? '1px solid var(--line2)' : 'none',
+                  borderRadius: 16,
+                  padding: '18px 44px',
+                  fontSize: 19,
+                  fontWeight: 700,
+                  background: s.me?.ready ? 'transparent' : 'var(--accent)',
+                  color: s.me?.ready ? 'var(--muted)' : 'var(--accent-ink)',
+                  cursor: 'pointer',
+                  WebkitTapHighlightColor: 'transparent'
+                }}
+              >
+                {s.me?.ready ? 'Not ready' : "I'm ready!"}
+              </button>
+            )}
+
             <button
               onClick={s.leaveParty}
               style={{
